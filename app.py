@@ -17,6 +17,18 @@ CORS(app)
 # In-memory storage for subscribed alerts (persists during runtime)
 SUBSCRIBED_ALERTS = []
 
+# Performance and Caching Headers
+@app.after_request
+def set_performance_headers(response):
+    if request.path.startswith('/static/'):
+        response.headers['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=3600'
+    return response
+
+@app.route("/ping")
+def ping():
+    """Lightweight health check endpoint to keep server awake."""
+    return jsonify({"status": "active", "timestamp": datetime.now().isoformat()}), 200
+
 @app.route("/")
 def index():
     """Render main web application interface."""

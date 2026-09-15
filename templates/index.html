@@ -1193,16 +1193,21 @@
     </div>
   </footer>
 
-  <!-- Re-initialize Lucide icons on Alpine changes -->
+  <!-- High-Performance Lucide Icons Initialization (Debounced, Zero CPU Loop) -->
   <script>
+    let iconDebounceTimer = null;
+    window.refreshIcons = function() {
+      if (iconDebounceTimer) clearTimeout(iconDebounceTimer);
+      iconDebounceTimer = setTimeout(() => {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      }, 40);
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
+      window.refreshIcons();
     });
-    // Observer to re-trigger icons whenever Alpine swaps DOM nodes
-    const observer = new MutationObserver(() => {
-      lucide.createIcons();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
   </script>
 
 </body>

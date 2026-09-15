@@ -94,6 +94,14 @@ document.addEventListener('alpine:init', () => {
       // Initial DOB age calculation
       this.updateAgeFromDob();
 
+      // Watch tab changes to cleanly refresh icons without DOM churn
+      this.$watch('currentTab', () => {
+        if (window.refreshIcons) window.refreshIcons();
+      });
+      this.$watch('activeResultTab', () => {
+        if (window.refreshIcons) window.refreshIcons();
+      });
+
       // Auto-load catalog & deadlines
       this.fetchCatalog();
       this.fetchDeadlines();
@@ -143,6 +151,7 @@ document.addEventListener('alpine:init', () => {
         console.error('Error running eligibility check:', err);
       } finally {
         this.isAssessing = false;
+        if (window.refreshIcons) window.refreshIcons();
       }
     },
 
@@ -167,6 +176,7 @@ document.addEventListener('alpine:init', () => {
         console.error('Error fetching catalog:', err);
       } finally {
         this.isLoadingCatalog = false;
+        if (window.refreshIcons) window.refreshIcons();
       }
     },
 
@@ -183,6 +193,7 @@ document.addEventListener('alpine:init', () => {
         console.error('Error fetching deadlines:', err);
       } finally {
         this.isLoadingDeadlines = false;
+        if (window.refreshIcons) window.refreshIcons();
       }
     },
 
