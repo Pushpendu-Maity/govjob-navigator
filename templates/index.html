@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GovJob Navigator – AI Government Job & Exam Eligibility Finder</title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+            },
+            saffron: {
+              500: '#f97316',
+              600: '#ea580c',
+            },
+            govnavy: {
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Marked JS for Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/style.css">
+
+  <!-- Alpine.js Application Logic -->
+  <script src="/static/app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+
+<body class="h-full flex flex-col text-slate-800 antialiased" x-data="govJobApp">
+
+  <!-- ================= TOP ANNOUNCEMENT BAR ================= -->
+  <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white text-xs sm:text-sm py-1.5 px-4 font-medium flex items-center justify-between shadow-sm">
+    <div class="flex items-center space-x-2 mx-auto sm:mx-0">
+      <span class="bg-white/20 px-2 py-0.5 rounded-full font-bold text-[11px] uppercase tracking-wider">Live Updates</span>
+      <span>📢 SSC CGL, RRB ALP, Post Office GDS & Police recruitments accepting online applications!</span>
+    </div>
+    <div class="hidden sm:flex items-center space-x-4">
+      <button @click="showAlertModal = true" class="hover:underline flex items-center gap-1">
+        <i data-lucide="bell" class="w-3.5 h-3.5"></i> Get Free Job Alerts
+      </button>
+      <span>•</span>
+      <button @click="printReport()" class="hover:underline flex items-center gap-1">
+        <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print Eligibility Card
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= HEADER & NAVIGATION ================= -->
+  <header class="bg-govnavy-900 text-white sticky top-0 z-40 shadow-md border-b border-slate-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-3 cursor-pointer" @click="currentTab = 'finder'">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg font-black text-xl tracking-wider">
+            GJ
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold text-lg sm:text-xl tracking-tight text-white">GovJob Navigator</span>
+              <span class="bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-bold px-1.5 py-0.5 rounded">AI POWERED</span>
+            </div>
+            <p class="text-[11px] text-slate-400 hidden sm:block">Indian Government Job & Exam Eligibility Finder • 10th Pass to Group A</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <button @click="currentTab = 'finder'" 
+                  :class="currentTab === 'finder' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800'"
+                  class="px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            Eligibility Finder
+          </button>
+
+          <button @click="currentTab = 'deadlines'" 
+                  :class="currentTab === 'deadlines' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800'"
+                  class="px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5">
+            <i data-lucide="clock" class="w-4 h-4"></i>
+            Urgent Deadlines
+            <span class="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">Hot</span>
+          </button>
+
+          <button @click="currentTab = 'browse'" 
+                  :class="currentTab === 'browse' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800'"
+                  class="px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5">
+            <i data-lucide="compass" class="w-4 h-4"></i>
+            Explore All Jobs
+          </button>
+
+          <button @click="currentTab = 'ai'" 
+                  :class="currentTab === 'ai' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800'"
+                  class="px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+            AI Counselor
+          </button>
+
+          <button @click="currentTab = 'bookmarks'" 
+                  :class="currentTab === 'bookmarks' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800'"
+                  class="px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 relative">
+            <i data-lucide="bookmark" class="w-4 h-4"></i>
+            Saved
+            <span x-show="bookmarkedIds.length > 0" x-text="bookmarkedIds.length" 
+                  class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full"></span>
+          </button>
+        </nav>
+
+        <!-- Right Quick Action -->
+        <div class="flex items-center space-x-2">
+          <button @click="showAlertModal = true"
+                  class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-lg shadow-sm flex items-center gap-1.5 transition">
+            <i data-lucide="bell-ring" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Get Alerts</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="md:hidden border-t border-slate-800 bg-slate-900/90 px-2 py-1.5 flex items-center justify-around text-xs">
+      <button @click="currentTab = 'finder'" :class="currentTab === 'finder' ? 'text-emerald-400 font-bold' : 'text-slate-400'" class="flex flex-col items-center py-1">
+        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+        <span>Finder</span>
+      </button>
+      <button @click="currentTab = 'deadlines'" :class="currentTab === 'deadlines' ? 'text-emerald-400 font-bold' : 'text-slate-400'" class="flex flex-col items-center py-1">
+        <i data-lucide="clock" class="w-4 h-4"></i>
+        <span>Deadlines</span>
+      </button>
+      <button @click="currentTab = 'browse'" :class="currentTab === 'browse' ? 'text-emerald-400 font-bold' : 'text-slate-400'" class="flex flex-col items-center py-1">
+        <i data-lucide="compass" class="w-4 h-4"></i>
+        <span>Explore</span>
+      </button>
+      <button @click="currentTab = 'ai'" :class="currentTab === 'ai' ? 'text-emerald-400 font-bold' : 'text-slate-400'" class="flex flex-col items-center py-1">
+        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+        <span>AI Guide</span>
+      </button>
+      <button @click="currentTab = 'bookmarks'" :class="currentTab === 'bookmarks' ? 'text-emerald-400 font-bold' : 'text-slate-400'" class="flex flex-col items-center py-1">
+        <i data-lucide="bookmark" class="w-4 h-4"></i>
+        <span>Saved (<span x-text="bookmarkedIds.length"></span>)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= HERO & METRICS BANNER ================= -->
+  <section class="bg-gradient-to-b from-govnavy-900 to-slate-900 text-white pt-6 pb-8 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-semibold mb-3">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          100% Deterministic & Official Criteria (No Misinformation)
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight sm:leading-snug">
+          Find Every Government Job & Exam <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">You Are Eligible For</span>
+        </h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-300">
+          From 10th Pass (Post Office GDS, Railway Group D, Police) to UPSC Group A. Never miss an application deadline again.
+        </p>
+
+        <!-- Metric Badges -->
+        <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+          <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
+            <div class="text-xs text-slate-400 font-medium">Verified Jobs Active</div>
+            <div class="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">25+ Exams</div>
+          </div>
+          <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
+            <div class="text-xs text-slate-400 font-medium">Open Vacancies</div>
+            <div class="text-xl sm:text-2xl font-black text-amber-400 mt-0.5">2,50,000+</div>
+          </div>
+          <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
+            <div class="text-xs text-slate-400 font-medium">Closing This Week</div>
+            <div class="text-xl sm:text-2xl font-black text-rose-400 mt-0.5">6 Urgent</div>
+          </div>
+          <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
+            <div class="text-xs text-slate-400 font-medium">Tiers Covered</div>
+            <div class="text-xl sm:text-2xl font-black text-sky-400 mt-0.5">10th to Group A</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: ELIGIBILITY FINDER (1-MIN SMART ASSESSMENT)       -->
+    <!-- ======================================================== -->
+    <div x-show="currentTab === 'finder'" x-transition class="space-y-6">
+      
+      <!-- Smart Form Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-7">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-5">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="user-check" class="w-5 h-5 text-emerald-600"></i>
+              Your Profile & Eligibility Parameters
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500">Enter your details once. We compute exact age cutoff, reservation relaxation & academic criteria.</p>
+          </div>
+          <div class="mt-3 sm:mt-0 flex items-center gap-2">
+            <button type="button" @click="runEligibilityCheck(true)" :disabled="isAssessing"
+                    class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span x-text="isAssessing ? 'Evaluating Criteria...' : 'Check All Eligible Jobs'"></span>
+            </button>
+          </div>
+        </div>
+
+        <form @submit.prevent="runEligibilityCheck(true)" class="space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- 1. Date of Birth -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Date of Birth (DOB)
+              </label>
+              <input type="date" x-model="profile.dob" @change="updateAgeFromDob()"
+                     class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+                <span>Calculated Age: <strong class="text-emerald-700 font-bold" x-text="profile.age + ' Years'"></strong></span>
+                <span class="text-[10px] text-slate-400">(Ref: 1 Aug 2026)</span>
+              </div>
+            </div>
+
+            <!-- 2. Reservation Category -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Category / Reservation
+              </label>
+              <select x-model="profile.category"
+                      class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+                <option value="UR">General / Unreserved (UR)</option>
+                <option value="EWS">EWS (Economically Weaker)</option>
+                <option value="OBC">OBC-NCL (+3 Years Relaxation)</option>
+                <option value="SC">SC (+5 Years Relaxation)</option>
+                <option value="ST">ST (+5 Years Relaxation)</option>
+              </select>
+              <div class="text-[11px] text-slate-500 mt-1">
+                <span x-show="profile.category === 'OBC'" class="text-amber-700 font-semibold">+3y age relaxation applies</span>
+                <span x-show="profile.category === 'SC' || profile.category === 'ST'" class="text-emerald-700 font-semibold">+5y age relaxation applies</span>
+                <span x-show="profile.category === 'UR'" class="text-slate-400">Standard general age limits apply</span>
+              </div>
+            </div>
+
+            <!-- 3. Highest Education Level -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Highest Qualification
+              </label>
+              <select x-model="profile.education_level"
+                      class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+                <option value="10th">10th Pass (Matriculation)</option>
+                <option value="12th">12th Pass (Intermediate / 10+2)</option>
+                <option value="iti">ITI (Industrial Training Trade)</option>
+                <option value="diploma">Polytechnic / Diploma (3-Year)</option>
+                <option value="graduate">Graduation / Bachelor's Degree</option>
+                <option value="post_graduate">Post-Graduation / Master's</option>
+              </select>
+              <div class="text-[11px] text-slate-500 mt-1">
+                Higher degrees satisfy lower job criteria automatically.
+              </div>
+            </div>
+
+            <!-- 4. Academic Stream / Discipline -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Stream / Specialization
+              </label>
+              <select x-model="profile.stream"
+                      class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+                <option value="any">General / Any Stream (Arts, etc.)</option>
+                <option value="12th_pcm">12th Science (PCM - Physics, Maths)</option>
+                <option value="mechanical">Engineering - Mechanical</option>
+                <option value="electrical">Engineering - Electrical</option>
+                <option value="civil">Engineering - Civil</option>
+                <option value="computer_science">Engineering - CS / IT / BCA</option>
+                <option value="law">Law - LL.B. / B.A. LL.B.</option>
+                <option value="education">Teaching - B.Ed / D.El.Ed / BTC</option>
+                <option value="nursing">Healthcare - B.Sc Nursing / GNM</option>
+                <option value="fitter">ITI - Fitter / Electrician</option>
+              </select>
+              <div class="text-[11px] text-slate-500 mt-1">
+                Matches specialized PSU & technical jobs.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Secondary Parameters Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2 border-t border-slate-100">
+            
+            <!-- Percentage / Marks -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Marks Percentage: <span class="text-emerald-700 font-black" x-text="profile.percentage + '%'"></span>
+                </label>
+              </div>
+              <input type="range" min="35" max="100" step="1" x-model="profile.percentage"
+                     class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+              <div class="text-[11px] text-slate-500 mt-1">Checks 50% & 60% exam cutoff rules (e.g. RBI, PSUs).</div>
+            </div>
+
+            <!-- Gender -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Gender
+              </label>
+              <select x-model="profile.gender"
+                      class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other / Transgender</option>
+              </select>
+              <div class="text-[11px] text-slate-500 mt-1">Checks female-specific posts & fee exemptions.</div>
+            </div>
+
+            <!-- Special Quotas: PwD & Ex-SM -->
+            <div class="flex flex-col justify-center space-y-2 pt-1">
+              <label class="inline-flex items-center text-xs font-semibold text-slate-700 cursor-pointer">
+                <input type="checkbox" x-model="profile.is_pwd" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 mr-2">
+                <span>PwD (Benchmark Disability) <strong class="text-emerald-700">+10y</strong></span>
+              </label>
+              <label class="inline-flex items-center text-xs font-semibold text-slate-700 cursor-pointer">
+                <input type="checkbox" x-model="profile.is_ex_serviceman" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 mr-2">
+                <span>Ex-Serviceman (Armed Forces) <strong class="text-emerald-700">+3y</strong></span>
+              </label>
+            </div>
+
+            <!-- Uniformed / Physical Specs Toggle -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Police & Defense Standard
+              </label>
+              <label class="inline-flex items-center text-xs font-semibold text-slate-700 cursor-pointer mb-1.5">
+                <input type="checkbox" x-model="profile.check_physical" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 mr-2">
+                <span>Check Height Requirements</span>
+              </label>
+              <div x-show="profile.check_physical" class="flex items-center gap-2 mt-1">
+                <input type="number" x-model="profile.height_cm" placeholder="Height in cm" min="140" max="210"
+                       class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-sm font-medium">
+                <span class="text-xs text-slate-500 font-semibold">cm</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Form Action Submit -->
+          <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="text-xs text-slate-500 flex items-center gap-1.5">
+              <i data-lucide="info" class="w-4 h-4 text-slate-400"></i>
+              Results are evaluated strictly according to official Employment News gazette notifications.
+            </div>
+            <button type="submit" :disabled="isAssessing"
+                    class="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2">
+              <i data-lucide="search" class="w-4 h-4"></i>
+              <span>Re-Evaluate My Eligibility</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ================= ASSESSMENT RESULTS SECTION ================= -->
+      <div x-show="hasAssessed" class="space-y-4">
+        
+        <!-- Results Summary Banner -->
+        <div class="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Assessment Result</span>
+            <div class="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5">
+              You are eligible for <span class="text-emerald-600 font-black" x-text="assessmentResults.summary.eligible_count"></span> Government Jobs 
+              (<span class="text-amber-600 font-black" x-text="assessmentResults.summary.total_vacancies.toLocaleString()"></span> Vacancies)!
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Profile: <span x-text="profile.age + ' yrs'"></span> • Category: <span class="font-semibold" x-text="profile.category"></span> • Degree: <span class="font-semibold" x-text="profile.education_level.toUpperCase()"></span>
+            </p>
+          </div>
+
+          <!-- Filter Sub-Tabs -->
+          <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl self-start sm:self-center">
+            <button @click="activeResultTab = 'eligible'"
+                    :class="activeResultTab === 'eligible' ? 'bg-white text-emerald-700 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'"
+                    class="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              100% Eligible (<span x-text="assessmentResults.summary.eligible_count"></span>)
+            </button>
+            <button @click="activeResultTab = 'near_match'"
+                    :class="activeResultTab === 'near_match' ? 'bg-white text-amber-700 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'"
+                    class="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              Near Match (<span x-text="assessmentResults.summary.near_match_count"></span>)
+            </button>
+            <button @click="activeResultTab = 'ineligible'"
+                    :class="activeResultTab === 'ineligible' ? 'bg-white text-rose-700 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'"
+                    class="px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+              Ineligible (<span x-text="assessmentResults.summary.ineligible_count"></span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. ELIGIBLE JOBS GRID -->
+        <div x-show="activeResultTab === 'eligible'" class="space-y-4">
+          <template x-if="assessmentResults.eligible.length === 0">
+            <div class="bg-white rounded-xl p-8 text-center border border-slate-200">
+              <i data-lucide="alert-circle" class="w-10 h-10 text-amber-500 mx-auto mb-2"></i>
+              <h3 class="font-bold text-slate-800">No 100% Matches Found for Current Inputs</h3>
+              <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Check the 'Near Match' tab to see exams you are almost eligible for, or adjust your age/qualification stream.</p>
+            </div>
+          </template>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <template x-for="job in assessmentResults.eligible" :key="job.job_id">
+              <div class="bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-md transition p-5 flex flex-col justify-between">
+                <div>
+                  <!-- Header row -->
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                            :class="{
+                              'badge-tier-1': job.tier === 1,
+                              'badge-tier-2': job.tier === 2,
+                              'badge-tier-3': job.tier === 3,
+                              'badge-tier-4': job.tier === 4,
+                              'badge-tier-5': job.tier === 5,
+                            }" x-text="job.tier_label"></span>
+                      <span class="text-[11px] font-semibold text-slate-500 ml-1.5" x-text="'• ' + job.sector"></span>
+                    </div>
+
+                    <!-- Bookmark button -->
+                    <button @click="toggleBookmark(job.job_id)" class="text-slate-400 hover:text-amber-500 transition">
+                      <i data-lucide="bookmark" class="w-5 h-5" :class="isBookmarked(job.job_id) ? 'fill-amber-500 text-amber-500' : ''"></i>
+                    </button>
+                  </div>
+
+                  <!-- Title -->
+                  <h3 class="font-bold text-slate-900 text-base sm:text-lg mt-2 leading-snug cursor-pointer hover:text-emerald-700"
+                      @click="openJobDetail(job)" x-text="job.job_title"></h3>
+                  <p class="text-xs text-slate-500 font-medium mt-0.5" x-text="job.department"></p>
+
+                  <!-- Key Specs Strip -->
+                  <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                    <span class="bg-slate-100 font-semibold px-2 py-1 rounded text-slate-700 flex items-center gap-1">
+                      <i data-lucide="users" class="w-3.5 h-3.5 text-slate-500"></i>
+                      <strong x-text="job.vacancies.toLocaleString()"></strong> Posts
+                    </span>
+                    <span class="bg-emerald-50 font-semibold px-2 py-1 rounded text-emerald-800 flex items-center gap-1">
+                      <i data-lucide="indian-rupee" class="w-3.5 h-3.5 text-emerald-600"></i>
+                      <span x-text="job.in_hand_salary"></span>
+                    </span>
+                    <span class="font-semibold px-2 py-1 rounded flex items-center gap-1"
+                          :class="job.app_status === 'closing_soon' ? 'bg-rose-100 text-rose-800 animate-urgent' : (job.app_status === 'open' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800')">
+                      <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                      <span x-text="job.app_status === 'closing_soon' ? 'Closing Soon!' : (job.app_status === 'open' ? 'Open Now' : 'Upcoming')"></span>
+                    </span>
+                  </div>
+
+                  <!-- Met Criteria Pills -->
+                  <div class="mt-3 space-y-1">
+                    <template x-for="m in job.met_criteria.slice(0, 3)" :key="m">
+                      <div class="text-[11px] text-emerald-700 font-medium flex items-center gap-1.5">
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                        <span x-text="m"></span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <div class="text-[11px] text-slate-500">
+                    Last Date: <strong class="text-slate-800" x-text="job.app_end_date"></strong>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button @click="openJobDetail(job)"
+                            class="text-slate-600 hover:text-slate-900 font-semibold text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition">
+                      Details & Syllabus
+                    </button>
+                    <a :href="job.apply_url" target="_blank" rel="noopener noreferrer"
+                       class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+                      Apply Now <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- 2. NEAR MATCH JOBS GRID -->
+        <div x-show="activeResultTab === 'near_match'" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <template x-for="job in assessmentResults.near_match" :key="job.job_id">
+              <div class="bg-white rounded-2xl border border-amber-200 p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between">
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Near Match</span>
+                    <span class="text-xs font-bold text-amber-700" x-text="job.match_score + '% Match'"></span>
+                  </div>
+                  <h3 class="font-bold text-slate-900 text-base mt-2" x-text="job.job_title"></h3>
+                  <p class="text-xs text-slate-500 font-medium" x-text="job.department"></p>
+
+                  <div class="mt-3 bg-amber-50/80 border border-amber-200 rounded-lg p-3">
+                    <div class="text-xs font-bold text-amber-900 mb-1 flex items-center gap-1">
+                      <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-600"></i>
+                      What's Missing:
+                    </div>
+                    <template x-for="un in job.unmet_criteria" :key="un">
+                      <div class="text-xs text-amber-800 font-medium" x-text="un"></div>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <button @click="openJobDetail(job)" class="text-xs font-semibold text-slate-600 hover:text-slate-900">
+                    View Requirements
+                  </button>
+                  <a :href="job.notification_pdf_url" target="_blank" class="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">
+                    Download Official PDF <i data-lucide="file-text" class="w-3 h-3"></i>
+                  </a>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- 3. INELIGIBLE JOBS GRID -->
+        <div x-show="activeResultTab === 'ineligible'" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <template x-for="job in assessmentResults.ineligible" :key="job.job_id">
+              <div class="bg-white rounded-2xl border border-slate-200 opacity-90 p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between">
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600" x-text="job.tier_label"></span>
+                    <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Criteria Not Met</span>
+                  </div>
+                  <h3 class="font-bold text-slate-800 text-base mt-2" x-text="job.job_title"></h3>
+                  <p class="text-xs text-slate-500 font-medium" x-text="job.department"></p>
+
+                  <div class="mt-3 bg-rose-50/70 border border-rose-100 rounded-lg p-2.5 space-y-1">
+                    <div class="text-[11px] font-bold text-rose-900">Ineligibility Reason:</div>
+                    <template x-for="un in job.unmet_criteria" :key="un">
+                      <div class="text-xs text-rose-700 font-medium flex items-start gap-1">
+                        <span>•</span>
+                        <span x-text="un"></span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-xs text-slate-400" x-text="'Vacancies: ' + job.vacancies.toLocaleString()"></span>
+                  <button @click="openJobDetail(job)" class="text-xs font-medium text-slate-500 hover:text-slate-800">
+                    View Full Notification Specs
+                  </button>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: URGENT DEADLINES & APPLICATION CALENDAR           -->
+    <!-- ======================================================== -->
+    <div x-show="currentTab === 'deadlines'" x-transition class="space-y-6">
+      
+      <!-- Deadline Hero Header -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <i data-lucide="alarm-clock" class="w-6 h-6 text-rose-600"></i>
+            Urgent Application Deadlines Tracker
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Never miss an exam fee submission or online application deadline. Track closing dates in real-time.
+          </p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+          <button @click="deadlineFilter = 'all'" :class="deadlineFilter === 'all' ? 'bg-white font-bold shadow-sm' : 'text-slate-600'" class="px-3 py-1 rounded-lg text-xs">All</button>
+          <button @click="deadlineFilter = 'closing_soon'" :class="deadlineFilter === 'closing_soon' ? 'bg-rose-500 text-white font-bold' : 'text-slate-600'" class="px-3 py-1 rounded-lg text-xs">Closing Soon (Hot)</button>
+          <button @click="deadlineFilter = 'open'" :class="deadlineFilter === 'open' ? 'bg-emerald-500 text-white font-bold' : 'text-slate-600'" class="px-3 py-1 rounded-lg text-xs">Open Now</button>
+          <button @click="deadlineFilter = 'upcoming'" :class="deadlineFilter === 'upcoming' ? 'bg-blue-500 text-white font-bold' : 'text-slate-600'" class="px-3 py-1 rounded-lg text-xs">Upcoming</button>
+        </div>
+      </div>
+
+      <!-- Deadlines List -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <template x-for="item in filteredDeadlines" :key="item.id">
+          <div class="bg-white rounded-2xl border p-5 flex flex-col justify-between shadow-sm transition hover:shadow-md"
+               :class="item.status === 'closing_soon' ? 'border-rose-300 ring-1 ring-rose-200' : 'border-slate-200'">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                      :class="item.status === 'closing_soon' ? 'bg-rose-100 text-rose-800' : (item.status === 'open' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800')"
+                      x-text="item.status === 'closing_soon' ? 'CLOSING SOON' : (item.status === 'open' ? 'ACCEPTING FORMS' : 'UPCOMING')"></span>
+                
+                <span class="text-xs font-black text-rose-600" x-show="item.status === 'closing_soon'">
+                  Last 48-72 Hours!
+                </span>
+              </div>
+
+              <h3 class="font-bold text-slate-900 text-base mt-2.5 leading-snug" x-text="item.title"></h3>
+              <p class="text-xs text-slate-500 mt-0.5" x-text="item.department"></p>
+
+              <!-- Dates & Countdown Box -->
+              <div class="mt-4 bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-2 text-xs">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-500">Application Window:</span>
+                  <span class="font-semibold text-slate-800" x-text="item.app_start_date + ' to ' + item.app_end_date"></span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-500">Expected Exam Date:</span>
+                  <span class="font-semibold text-slate-800" x-text="item.exam_date"></span>
+                </div>
+                <div class="flex justify-between items-center pt-1.5 border-t border-slate-200 font-bold">
+                  <span class="text-slate-700">Days Remaining:</span>
+                  <span :class="item.days_remaining <= 3 ? 'text-rose-600 font-black text-sm animate-pulse' : 'text-emerald-700 font-bold'"
+                        x-text="item.days_remaining <= 0 ? 'Last Day Today!' : item.days_remaining + ' Days Left'"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Action Links -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+              <a :href="getGoogleCalendarUrl(item)" target="_blank"
+                 class="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1">
+                <i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-600"></i>
+                Add Reminder
+              </a>
+              <a :href="item.apply_url" target="_blank"
+                 class="bg-govnavy-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition flex items-center gap-1">
+                Apply Portal <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </a>
+            </div>
+
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: EXPLORE ALL JOBS (10TH PASS TO GROUP A)           -->
+    <!-- ======================================================== -->
+    <div x-show="currentTab === 'browse'" x-transition class="space-y-6">
+      
+      <!-- Filter Toolbar -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        
+        <!-- Search bar -->
+        <div class="relative">
+          <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-3.5 top-3"></i>
+          <input type="text" x-model="searchQuery" @input.debounce.300ms="fetchCatalog()"
+                 placeholder="Search by Exam Name, Department, Post (e.g., 'Railway ALP', 'Post Office', 'Inspector', 'Police')..."
+                 class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-11 pr-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800">
+        </div>
+
+        <!-- Filter Chips Row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          
+          <!-- Tier Filter -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Career Tier</label>
+            <select x-model="selectedTier" @change="fetchCatalog()"
+                    class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
+              <option value="">All Tiers (10th to Group A)</option>
+              <option value="1">Tier 1: 10th / 12th Pass</option>
+              <option value="2">Tier 2: ITI & Diploma</option>
+              <option value="3">Tier 3: Graduate (Any Degree)</option>
+              <option value="4">Tier 4: Professional & Domain</option>
+              <option value="5">Tier 5: Group A / UPSC Elite</option>
+            </select>
+          </div>
+
+          <!-- Sector Filter -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Sector</label>
+            <select x-model="selectedSector" @change="fetchCatalog()"
+                    class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
+              <option value="">All Sectors</option>
+              <option value="Railways">Railways (RRB)</option>
+              <option value="Police">Police & Paramilitary</option>
+              <option value="Banking">Banking (IBPS / SBI / RBI)</option>
+              <option value="SSC">Staff Selection (SSC)</option>
+              <option value="Defense">Defense (Army, Navy, DRDO)</option>
+              <option value="Postal">Postal Department (India Post)</option>
+              <option value="UPSC">UPSC (Civil Services / ESE)</option>
+              <option value="Teaching">Teaching & Education</option>
+              <option value="PSU">Maharatna / Navratna PSUs</option>
+              <option value="Judiciary">Judiciary & Courts</option>
+              <option value="Healthcare">Healthcare & AIIMS</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Application Status</label>
+            <select x-model="selectedStatus" @change="fetchCatalog()"
+                    class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
+              <option value="">All Statuses</option>
+              <option value="open">Open / Active Now</option>
+              <option value="closing_soon">Closing Soon (< 72h)</option>
+              <option value="upcoming">Upcoming Notifications</option>
+            </select>
+          </div>
+
+          <!-- Sort Filter -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Sort By</label>
+            <select x-model="sortBy" @change="fetchCatalog()"
+                    class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
+              <option value="status">Status & Urgency</option>
+              <option value="vacancies">Highest Vacancies</option>
+              <option value="deadline">Closest Deadline</option>
+              <option value="tier">Career Tier (Basic -> Advance)</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Catalog Jobs List -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <template x-for="job in catalogJobs" :key="job.id">
+          <div class="bg-white rounded-2xl border border-slate-200 hover:shadow-md transition p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2">
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                      :class="{
+                        'badge-tier-1': job.tier === 1,
+                        'badge-tier-2': job.tier === 2,
+                        'badge-tier-3': job.tier === 3,
+                        'badge-tier-4': job.tier === 4,
+                        'badge-tier-5': job.tier === 5,
+                      }" x-text="job.tier_label"></span>
+                <button @click="toggleBookmark(job.id)" class="text-slate-400 hover:text-amber-500">
+                  <i data-lucide="bookmark" class="w-4 h-4" :class="isBookmarked(job.id) ? 'fill-amber-500 text-amber-500' : ''"></i>
+                </button>
+              </div>
+
+              <h3 class="font-bold text-slate-900 text-base mt-2 cursor-pointer hover:text-emerald-700"
+                  @click="openJobDetail(job)" x-text="job.title"></h3>
+              <p class="text-xs text-slate-500 font-medium" x-text="job.department"></p>
+
+              <p class="text-xs text-slate-600 mt-2 line-clamp-2" x-text="job.description"></p>
+
+              <div class="mt-3 flex flex-wrap gap-1.5 text-xs">
+                <span class="bg-slate-100 px-2 py-0.5 rounded font-semibold text-slate-700" x-text="job.vacancies.toLocaleString() + ' Posts'"></span>
+                <span class="bg-emerald-50 px-2 py-0.5 rounded font-semibold text-emerald-800" x-text="job.in_hand_salary"></span>
+                <span class="bg-amber-50 px-2 py-0.5 rounded font-semibold text-amber-800" x-text="'Min: ' + job.education_level.toUpperCase()"></span>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] text-slate-500" x-text="'Last Date: ' + job.app_end_date"></span>
+              <button @click="openJobDetail(job)" class="text-xs font-bold text-emerald-700 hover:underline">
+                View Details & Apply →
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: AI JOB & EXAM COUNSELOR                           -->
+    <!-- ======================================================== -->
+    <div x-show="currentTab === 'ai'" x-transition class="max-w-4xl mx-auto space-y-5">
+      
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-7">
+        <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold">
+            <i data-lucide="bot" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">GovJob AI Career Counselor & Exam Guide</h2>
+            <p class="text-xs text-slate-500">Ask questions about syllabus, 7th CPC salary, direct merit jobs, or exam strategy.</p>
+          </div>
+        </div>
+
+        <!-- Quick Questions Chips -->
+        <div class="mb-5">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Common Aspirant Questions:</div>
+          <div class="flex flex-wrap gap-2">
+            <button @click="askAi('Top paying government jobs for 10th and 12th pass')"
+                    class="text-xs bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-lg px-3 py-1.5 transition font-medium">
+              💼 Highest salary 10th/12th jobs?
+            </button>
+            <button @click="askAi('Government jobs without written exam direct merit')"
+                    class="text-xs bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-lg px-3 py-1.5 transition font-medium">
+              🎯 Jobs with NO exam (Direct Merit)?
+            </button>
+            <button @click="askAi('SSC CGL vs IBPS Bank PO difference')"
+                    class="text-xs bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-lg px-3 py-1.5 transition font-medium">
+              ⚖️ SSC CGL vs Bank PO comparison?
+            </button>
+            <button @click="askAi('How 7th Pay Commission salary is calculated (DA, HRA)')"
+                    class="text-xs bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-lg px-3 py-1.5 transition font-medium">
+              💰 Explain 7th Pay Commission Salary?
+            </button>
+            <button @click="askAi('Age relaxation rules for OBC, SC, ST, PwD candidates')"
+                    class="text-xs bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-lg px-3 py-1.5 transition font-medium">
+              📜 Category Age Relaxation Rules?
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Stream Box -->
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-4 max-h-[480px] overflow-y-auto">
+          <template x-for="(msg, idx) in chatHistory" :key="idx">
+            <div :class="msg.sender === 'user' ? 'text-right' : 'text-left'">
+              
+              <!-- User Message -->
+              <template x-if="msg.sender === 'user'">
+                <div class="inline-block bg-emerald-600 text-white text-sm font-medium rounded-2xl rounded-tr-none px-4 py-2.5 max-w-lg shadow-sm">
+                  <span x-text="msg.text"></span>
+                </div>
+              </template>
+
+              <!-- AI Message -->
+              <template x-if="msg.sender === 'ai'">
+                <div class="inline-block bg-white text-slate-800 text-sm rounded-2xl rounded-tl-none p-4 max-w-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div class="font-bold text-slate-900 flex items-center gap-1.5 border-b border-slate-100 pb-1.5" x-show="msg.title">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                    <span x-text="msg.title"></span>
+                  </div>
+                  <div class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line" x-text="msg.text"></div>
+                </div>
+              </template>
+
+            </div>
+          </template>
+
+          <div x-show="isAiTyping" class="flex items-center gap-2 text-xs text-slate-400 font-medium italic">
+            <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
+            Counselor is analyzing official rules...
+          </div>
+        </div>
+
+        <!-- Input Box -->
+        <form @submit.prevent="askAi()" class="mt-4 flex gap-2">
+          <input type="text" x-model="aiQuery" placeholder="Ask anything: e.g. 'I am 25, B.Com graduate with 52% marks, what can I apply for?'..."
+                 class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800">
+          <button type="submit" :disabled="isAiTyping"
+                  class="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Ask AI</span>
+          </button>
+        </form>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 5: SAVED / BOOKMARKED JOBS                           -->
+    <!-- ======================================================== -->
+    <div x-show="currentTab === 'bookmarks'" x-transition class="space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <i data-lucide="bookmark" class="w-6 h-6 text-amber-500"></i>
+            My Shortlisted Exams & Deadlines
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Jobs you have bookmarked for quick application access. Saved locally in your browser.
+          </p>
+        </div>
+        <button @click="printReport()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 self-start sm:self-center">
+          <i data-lucide="printer" class="w-4 h-4"></i> Print Shortlist
+        </button>
+      </div>
+
+      <template x-if="bookmarkedJobs.length === 0">
+        <div class="bg-white rounded-2xl p-12 text-center border border-slate-200">
+          <i data-lucide="bookmark-x" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+          <h3 class="font-bold text-slate-800 text-lg">No Saved Jobs Yet</h3>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Click the bookmark icon on any exam card in the Eligibility Finder or Catalog to pin them here.</p>
+          <button @click="currentTab = 'finder'" class="mt-4 bg-emerald-600 text-white font-bold text-xs px-4 py-2 rounded-xl">
+            Go to Eligibility Finder
+          </button>
+        </div>
+      </template>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" x-show="bookmarkedJobs.length > 0">
+        <template x-for="job in bookmarkedJobs" :key="job.id">
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col justify-between shadow-sm">
+            <div>
+              <div class="flex items-start justify-between">
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full badge-tier-3" x-text="job.tier_label"></span>
+                <button @click="toggleBookmark(job.id)" class="text-amber-500 hover:text-slate-400">
+                  <i data-lucide="bookmark" class="w-5 h-5 fill-amber-500"></i>
+                </button>
+              </div>
+
+              <h3 class="font-bold text-slate-900 text-base mt-2" x-text="job.title"></h3>
+              <p class="text-xs text-slate-500 font-medium" x-text="job.department"></p>
+
+              <div class="mt-3 bg-slate-50 p-2.5 rounded-lg text-xs space-y-1">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Last Date:</span>
+                  <strong class="text-slate-800" x-text="job.app_end_date"></strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Salary:</span>
+                  <strong class="text-emerald-700" x-text="job.in_hand_salary"></strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <button @click="openJobDetail(job)" class="text-xs font-semibold text-slate-600 hover:text-slate-900">
+                View Full Details
+              </button>
+              <a :href="job.apply_url" target="_blank"
+                 class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1">
+                Apply <i data-lucide="external-link" class="w-3 h-3"></i>
+              </a>
+            </div>
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= JOB DETAIL MODAL DRAWER ================= -->
+  <div x-show="activeJobModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="closeJobModal()"></div>
+
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto">
+        
+        <!-- Modal Header -->
+        <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800" x-text="activeJobModal ? (activeJobModal.tier_label || 'Government Exam') : ''"></span>
+              <span class="text-xs font-semibold text-slate-500" x-text="activeJobModal ? activeJobModal.sector : ''"></span>
+            </div>
+            <h2 class="text-xl font-extrabold text-slate-900 mt-1.5" x-text="activeJobModal ? (activeJobModal.title || activeJobModal.job_title) : ''"></h2>
+            <p class="text-xs text-slate-500" x-text="activeJobModal ? activeJobModal.department : ''"></p>
+          </div>
+          <button @click="closeJobModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- 7th Pay Commission Salary Breakdown -->
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4">
+          <div class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i data-lucide="indian-rupee" class="w-4 h-4 text-emerald-700"></i>
+            7th Central Pay Commission (CPC) Pay Scale
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            <div>
+              <span class="text-slate-500 block">Pay Band / Level:</span>
+              <strong class="text-slate-900" x-text="activeJobModal ? activeJobModal.pay_level : ''"></strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Basic Pay Matrix:</span>
+              <strong class="text-slate-900" x-text="activeJobModal ? activeJobModal.salary_range : ''"></strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block">In-Hand Estimated Salary:</span>
+              <strong class="text-emerald-700 font-extrabold" x-text="activeJobModal ? activeJobModal.in_hand_salary : ''"></strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selection Stages -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Selection Stages:</h4>
+          <div class="space-y-1.5">
+            <template x-for="(stage, idx) in (activeJobModal ? activeJobModal.selection_stages : [])" :key="idx">
+              <div class="flex items-center gap-2 text-xs text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200/70">
+                <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-[10px]" x-text="idx + 1"></span>
+                <span x-text="stage"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Syllabus Highlights -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Syllabus Highlights:</h4>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80 space-y-1.5">
+            <template x-for="item in (activeJobModal ? activeJobModal.syllabus_highlights : [])" :key="item">
+              <div class="text-xs text-slate-700 flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">•</span>
+                <span x-text="item"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Preparation Tips -->
+        <div x-show="activeJobModal && activeJobModal.preparation_tips" class="bg-amber-50/70 border border-amber-200 rounded-xl p-3">
+          <div class="text-xs font-bold text-amber-900 mb-1 flex items-center gap-1">
+            <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-600"></i>
+            Preparation Tip from Toppers:
+          </div>
+          <p class="text-xs text-amber-950" x-text="activeJobModal ? activeJobModal.preparation_tips : ''"></p>
+        </div>
+
+        <!-- Direct Actions -->
+        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <a :href="activeJobModal ? activeJobModal.notification_pdf_url : '#'" target="_blank"
+             class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5">
+            <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
+            Download Notification PDF
+          </a>
+          <a :href="activeJobModal ? activeJobModal.apply_url : '#'" target="_blank"
+             class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
+            Official Online Apply Portal <i data-lucide="external-link" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JOB ALERTS MODAL ================= -->
+  <div x-show="showAlertModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showAlertModal = false"></div>
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-4">
+        
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+            <i data-lucide="bell-ring" class="w-5 h-5 text-emerald-600"></i>
+            Get Free Government Job Alerts
+          </h3>
+          <button @click="showAlertModal = false" class="text-slate-400 hover:text-slate-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-500">
+          Get real-time updates as soon as new 10th/12th, Railway, SSC, or Group A notifications matching your eligibility are released.
+        </p>
+
+        <form @submit.prevent="submitAlert()" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp Mobile Number or Email</label>
+            <input type="text" x-model="alertContact" required placeholder="+91 9876543210 or yourname@gmail.com"
+                   class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-emerald-500 font-medium">
+          </div>
+
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
+            <div class="flex justify-between">
+              <span class="text-slate-500">Selected Category:</span>
+              <strong class="text-slate-800" x-text="profile.category"></strong>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Qualification:</span>
+              <strong class="text-slate-800" x-text="profile.education_level.toUpperCase()"></strong>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2.5 rounded-xl shadow transition">
+            Activate Free Job Alerts
+          </button>
+
+          <p x-show="alertSubmitted" class="text-xs text-emerald-700 font-semibold text-center bg-emerald-50 p-2 rounded-lg" x-text="alertMsg"></p>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PRINTABLE REPORT CARD (FOR EXPORT / PRINT) ================= -->
+  <div id="printable-report" class="hidden">
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #0f172a;">
+      <div style="text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 24px; color: #0f172a;">GOVJOB NAVIGATOR – ELIGIBILITY ASSESSMENT CARD</h1>
+        <p style="margin: 5px 0 0 0; color: #64748b; font-size: 12px;">Official Category-Aware Examination Qualification Report</p>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 13px;">
+        <div>
+          <p><strong>Candidate Age:</strong> <span x-text="profile.age"></span> Years</p>
+          <p><strong>Category:</strong> <span x-text="profile.category"></span></p>
+        </div>
+        <div>
+          <p><strong>Education:</strong> <span x-text="profile.education_level.toUpperCase()"></span></p>
+          <p><strong>Marks Percentage:</strong> <span x-text="profile.percentage"></span>%</p>
+        </div>
+        <div>
+          <p><strong>Assessment Date:</strong> 15 September 2026</p>
+          <p><strong>Status:</strong> Verified Qualified</p>
+        </div>
+      </div>
+
+      <h3 style="font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; color: #047857;">
+        Verified Eligible Examinations & Vacancies
+      </h3>
+
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
+        <thead>
+          <tr style="background: #f1f5f9; text-align: left;">
+            <th style="padding: 8px; border: 1px solid #cbd5e1;">Exam / Post</th>
+            <th style="padding: 8px; border: 1px solid #cbd5e1;">Department</th>
+            <th style="padding: 8px; border: 1px solid #cbd5e1;">Vacancies</th>
+            <th style="padding: 8px; border: 1px solid #cbd5e1;">Salary (In-Hand)</th>
+            <th style="padding: 8px; border: 1px solid #cbd5e1;">Last Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="job in assessmentResults.eligible" :key="job.job_id">
+            <tr>
+              <td style="padding: 8px; border: 1px solid #cbd5e1; font-weight: bold;" x-text="job.job_title"></td>
+              <td style="padding: 8px; border: 1px solid #cbd5e1;" x-text="job.department"></td>
+              <td style="padding: 8px; border: 1px solid #cbd5e1;" x-text="job.vacancies.toLocaleString()"></td>
+              <td style="padding: 8px; border: 1px solid #cbd5e1;" x-text="job.in_hand_salary"></td>
+              <td style="padding: 8px; border: 1px solid #cbd5e1;" x-text="job.app_end_date"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+
+      <div style="margin-top: 30px; font-size: 11px; color: #64748b; text-align: center;">
+        Generated by GovJob Navigator Engine • Always verify final dates on the official commission websites.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-govnavy-950 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-lg bg-emerald-500 text-white font-black text-xs flex items-center justify-center">GJ</div>
+          <span class="font-bold text-white text-sm">GovJob Navigator</span>
+          <span>— Empowering every Indian student with transparent eligibility discovery.</span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button @click="currentTab = 'finder'" class="hover:text-white transition">Eligibility Finder</button>
+          <span>•</span>
+          <button @click="currentTab = 'deadlines'" class="hover:text-white transition">Urgent Deadlines</button>
+          <span>•</span>
+          <button @click="currentTab = 'ai'" class="hover:text-white transition">AI Counselor</button>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-800/80 text-[11px] text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <span>© 2026 GovJob Navigator. Covering UPSC, SSC, Railways, State Police, Banking & PSUs.</span>
+        <span>Ad-Free • Real-Time • 100% Deterministic Verification</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Re-initialize Lucide icons on Alpine changes -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+    // Observer to re-trigger icons whenever Alpine swaps DOM nodes
+    const observer = new MutationObserver(() => {
+      lucide.createIcons();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+
+</body>
+</html>
