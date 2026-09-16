@@ -186,26 +186,26 @@
           Find Every Government Job & Exam <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">You Are Eligible For</span>
         </h1>
         <p class="mt-2 text-sm sm:text-base text-slate-300">
-          From 10th Pass (Post Office GDS, Railway Group D, Police) to UPSC Group A. Never miss an application deadline again.
+          From 8th & 10th Pass (Court Peon, FCI Watchman, Post Office GDS, Gramin Bank) to UPSC Group A. Never miss an application deadline again.
         </p>
 
         <!-- Metric Badges -->
         <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
           <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
             <div class="text-xs text-slate-400 font-medium">Verified Jobs Active</div>
-            <div class="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">25+ Exams</div>
+            <div class="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">45+ Exams</div>
           </div>
           <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
             <div class="text-xs text-slate-400 font-medium">Open Vacancies</div>
-            <div class="text-xl sm:text-2xl font-black text-amber-400 mt-0.5">2,50,000+</div>
+            <div class="text-xl sm:text-2xl font-black text-amber-400 mt-0.5">4,50,000+</div>
           </div>
           <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
             <div class="text-xs text-slate-400 font-medium">Closing This Week</div>
-            <div class="text-xl sm:text-2xl font-black text-rose-400 mt-0.5">6 Urgent</div>
+            <div class="text-xl sm:text-2xl font-black text-rose-400 mt-0.5">8 Urgent</div>
           </div>
           <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-xl">
             <div class="text-xs text-slate-400 font-medium">Tiers Covered</div>
-            <div class="text-xl sm:text-2xl font-black text-sky-400 mt-0.5">10th to Group A</div>
+            <div class="text-xl sm:text-2xl font-black text-sky-400 mt-0.5">8th to Group A</div>
           </div>
         </div>
       </div>
@@ -321,6 +321,7 @@
               </label>
               <select x-model="profile.education_level"
                       class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+                <option value="8th">8th Pass (Middle School / Basic)</option>
                 <option value="10th">10th Pass (Matriculation)</option>
                 <option value="12th">12th Pass (Intermediate / 10+2)</option>
                 <option value="iti">ITI (Industrial Training Trade)</option>
@@ -347,13 +348,15 @@
                 <option value="civil">Engineering - Civil</option>
                 <option value="cse_it">Graduation in CSE or CS & IT (B.Tech / B.E.)</option>
                 <option value="bca">BCA (Bachelor of Computer Applications)</option>
+                <option value="driving_license">Motor Vehicle Driving License (Driver - Low Competition)</option>
+                <option value="stenography">Stenography & Shorthand (Steno Grade C/D - Low Competition)</option>
                 <option value="law">Law - LL.B. / B.A. LL.B.</option>
                 <option value="education">Teaching - B.Ed / D.El.Ed / BTC</option>
                 <option value="nursing">Healthcare - B.Sc Nursing / GNM</option>
                 <option value="fitter">ITI - Fitter / Electrician</option>
               </select>
               <div class="text-[11px] text-slate-500 mt-1">
-                Matches specialized PSU & technical jobs.
+                Matches specialized PSU, skill-based & technical jobs.
               </div>
             </div>
 
@@ -510,6 +513,18 @@
                         <i data-lucide="map-pin" class="w-2.5 h-2.5 text-slate-400"></i>
                         <span x-text="job.state"></span>
                       </span>
+                      <!-- Direct Merit / Low Competition Badge -->
+                      <span x-show="job.exam_date && (job.exam_date.toLowerCase().includes('direct merit') || job.exam_date.toLowerCase().includes('no written exam'))"
+                            class="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="zap" class="w-3 h-3 text-amber-600"></i>
+                        <span>Direct Merit (No Exam)</span>
+                      </span>
+                      <!-- 8th Pass Badge -->
+                      <span x-show="job.education_level === '8th'"
+                            class="inline-flex items-center gap-1 bg-purple-100 text-purple-900 border border-purple-300 font-bold text-[10px] px-2 py-0.5 rounded-full">
+                        <i data-lucide="award" class="w-2.5 h-2.5 text-purple-600"></i>
+                        <span>8th Pass</span>
+                      </span>
                     </div>
 
                     <!-- Bookmark button -->
@@ -590,6 +605,16 @@
                       <span x-show="!job.is_home_state && job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-semibold px-1.5 py-0.5 rounded">
                         <i data-lucide="map-pin" class="w-2.5 h-2.5 text-slate-400"></i>
                         <span x-text="job.state"></span>
+                      </span>
+                      <span x-show="job.exam_date && (job.exam_date.toLowerCase().includes('direct merit') || job.exam_date.toLowerCase().includes('no written exam'))"
+                            class="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="zap" class="w-3 h-3 text-amber-600"></i>
+                        <span>Direct Merit (No Exam)</span>
+                      </span>
+                      <span x-show="job.education_level === '8th'"
+                            class="inline-flex items-center gap-1 bg-purple-100 text-purple-900 border border-purple-300 font-bold text-[10px] px-1.5 py-0.5 rounded-full">
+                        <i data-lucide="award" class="w-2.5 h-2.5 text-purple-600"></i>
+                        <span>8th Pass</span>
                       </span>
                     </div>
                     <span class="text-xs font-bold text-amber-700 shrink-0" x-text="job.match_score + '% Match'"></span>
@@ -772,8 +797,8 @@
             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Career Tier</label>
             <select x-model="selectedTier" @change="fetchCatalog()"
                     class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
-              <option value="">All Tiers (10th to Group A)</option>
-              <option value="1">Tier 1: 10th / 12th Pass</option>
+              <option value="">All Tiers (8th Pass to Group A)</option>
+              <option value="1">Tier 1: 8th, 10th & 12th Pass (Entry Level)</option>
               <option value="2">Tier 2: ITI & Diploma</option>
               <option value="3">Tier 3: Graduate (Any Degree)</option>
               <option value="4">Tier 4: Professional & Domain</option>
@@ -787,16 +812,22 @@
             <select x-model="selectedSector" @change="fetchCatalog()"
                     class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
               <option value="">All Sectors</option>
-              <option value="Railways">Railways (RRB)</option>
+              <option value="Banking">Banking (SBI / IBPS / Peon)</option>
+              <option value="Gramin Bank">Gramin Bank (Rural Regional RRB)</option>
+              <option value="Railways">Railways (RRB / Trade Apprentice)</option>
+              <option value="Postal">Postal Department (India Post GDS / MTS)</option>
+              <option value="Judiciary">Courts & Judiciary (District Court Peon)</option>
+              <option value="Food & Civil Supplies">Food & Civil Supplies (FCI Watchman)</option>
+              <option value="Agriculture & Animal Husbandry">Animal Husbandry & Agriculture</option>
+              <option value="Women & Child Development">Women & Child Development (Anganwadi)</option>
+              <option value="Transport & Logistics">Transport & Logistics (Driver / Conductor)</option>
+              <option value="Municipal & Local Bodies">Municipal & Local Bodies (Ward / Safai)</option>
               <option value="Police">Police & Paramilitary</option>
-              <option value="Banking">Banking (IBPS / SBI / RBI)</option>
-              <option value="SSC">Staff Selection (SSC)</option>
+              <option value="SSC">Staff Selection (SSC Steno / MTS / CGL)</option>
               <option value="Defense">Defense (Army, Navy, DRDO)</option>
-              <option value="Postal">Postal Department (India Post)</option>
               <option value="UPSC">UPSC (Civil Services / ESE)</option>
               <option value="Teaching">Teaching & Education</option>
               <option value="PSU">Maharatna / Navratna PSUs</option>
-              <option value="Judiciary">Judiciary & Courts</option>
               <option value="Healthcare">Healthcare & AIIMS</option>
             </select>
           </div>
@@ -865,6 +896,16 @@
                   <span x-show="job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     <i data-lucide="map-pin" class="w-2.5 h-2.5 text-emerald-600"></i>
                     <span x-text="job.state"></span>
+                  </span>
+                  <span x-show="job.exam_date && (job.exam_date.toLowerCase().includes('direct merit') || job.exam_date.toLowerCase().includes('no written exam'))"
+                        class="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                    <i data-lucide="zap" class="w-2.5 h-2.5 text-amber-600"></i>
+                    <span>Direct Merit</span>
+                  </span>
+                  <span x-show="job.education_level === '8th'"
+                        class="inline-flex items-center gap-1 bg-purple-100 text-purple-900 border border-purple-300 font-bold text-[10px] px-1.5 py-0.5 rounded-full">
+                    <i data-lucide="award" class="w-2.5 h-2.5 text-purple-600"></i>
+                    <span>8th Pass</span>
                   </span>
                 </div>
                 <button @click="toggleBookmark(job.id)" class="text-slate-400 hover:text-amber-500">

@@ -1356,7 +1356,797 @@ GOVT_JOBS = [
         "description": "The pinnacle of engineering careers in India. Appoints Assistant Executive Engineers who design and manage national infrastructure, power grids, and defense installations.",
         "syllabus_highlights": ["Paper 1: General Studies, Engineering Ethics, Project Management, Environmental Studies, ICT", "Paper 2 & Mains: Comprehensive core branch engineering domain"],
         "preparation_tips": "Practice conventional step-by-step numerical solving for Stage-II; handwriting, presentation, and formula derivations carry high marks."
-    }
+    },
+    {
+        "id": "ibps-rrb-gramin-bank-clerk",
+        "title": "IBPS RRB Gramin Bank Office Assistant (Multipurpose / Rural Bank Clerk)",
+        "department": "Regional Rural Banks (RRBs) - IBPS Common Recruitment Process",
+        "tier": 3,
+        "tier_label": "Graduate (Any Stream)",
+        "sector": "Gramin Bank",
+        "state": "All-India",
+        "vacancies": 5585,
+        "status": "open",
+        "app_start_date": "2026-08-25",
+        "app_end_date": "2026-09-27",
+        "exam_date": "November 2026",
+        "min_age": 18,
+        "max_age_general": 28,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 3
+        },
+        "education_level": "graduate",
+        "allowed_education": [
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India (State Rural Bank Circles)",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Proficiency in local state language (Bengali, Hindi, Marathi, etc.)",
+                "Working knowledge of computer applications"
+        ],
+        "pay_level": "Scale I Clerical Cadre",
+        "salary_range": "Rs 19,900 - Rs 47,920",
+        "in_hand_salary": "Rs 35,000 - Rs 40,000/mo",
+        "selection_stages": [
+                "Prelims Online CBT (Reasoning 40 Qs + Numerical Ability 40 Qs)",
+                "Mains Online Exam (200 Marks)",
+                "NO INTERVIEW (100% selection on Mains marks)"
+        ],
+        "apply_url": "https://www.ibps.in",
+        "notification_pdf_url": "https://www.ibps.in/rrb_office_assistant.pdf",
+        "official_portal": "https://www.ibps.in",
+        "description": "Easy-entry clerical posts across 43 Regional Rural Banks (Gramin Banks) in India. Conducted in 13 regional languages, no interview, and far less stressful competition than SBI PO or SSC CGL.",
+        "syllabus_highlights": [
+                "Reasoning Ability",
+                "Numerical Ability",
+                "General Awareness (Rural Economy & Banking)",
+                "English / Hindi Language",
+                "Computer Knowledge"
+        ],
+        "preparation_tips": "High speed in Simplification, Approximation, and Seating Arrangements is key. There is NO interview stage!"
+},
+    {
+        "id": "bank-sub-staff-peon-cbi",
+        "title": "Bank Sub-Staff & Safai Karmachari (Central Bank Peon Recruitment)",
+        "department": "Central Bank of India & Public Sector Commercial Banks",
+        "tier": 1,
+        "tier_label": "10th / 8th Pass (Entry Level)",
+        "sector": "Banking",
+        "state": "All-India",
+        "vacancies": 484,
+        "status": "closing_soon",
+        "app_start_date": "2026-08-28",
+        "app_end_date": "2026-09-20",
+        "exam_date": "October 2026",
+        "min_age": 18,
+        "max_age_general": 26,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 3
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Elementary reading and writing in local state language"
+        ],
+        "pay_level": "Subordinate Staff Scale",
+        "salary_range": "Rs 14,500 - Rs 28,145",
+        "in_hand_salary": "Rs 24,000 - Rs 28,500/mo + Bank Allowances",
+        "selection_stages": [
+                "Online Written Test (Elementary English, General Awareness, Elementary Maths, Psychometric)",
+                "Local Language Test"
+        ],
+        "apply_url": "https://www.centralbankofindia.co.in",
+        "notification_pdf_url": "https://www.centralbankofindia.co.in/recruitment.pdf",
+        "official_portal": "https://www.centralbankofindia.co.in",
+        "description": "Permanent full-time subordinate staff / peon post in commercial public sector bank branches. Very low educational requirement and far less competition than officer posts.",
+        "syllabus_highlights": [
+                "Elementary English (Grade 8 level)",
+                "General Awareness & Banking basics",
+                "Elementary Arithmetic",
+                "Psychometric Reasoning"
+        ],
+        "preparation_tips": "Revise basic addition, subtraction, percentages, and current affairs. Simple qualifying local language test."
+},
+    {
+        "id": "ibps-rrb-office-attendant",
+        "title": "Gramin Bank Office Attendant & Sub-Staff (Messenger / Peon)",
+        "department": "State Regional Rural Banks (RRBs)",
+        "tier": 1,
+        "tier_label": "10th / 8th Pass (Entry Level)",
+        "sector": "Gramin Bank",
+        "state": "All-India",
+        "vacancies": 2150,
+        "status": "open",
+        "app_start_date": "2026-09-02",
+        "app_end_date": "2026-10-02",
+        "exam_date": "November 2026",
+        "min_age": 18,
+        "max_age_general": 28,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 3
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Local language reading and writing ability"
+        ],
+        "pay_level": "Sub-Staff Grade A",
+        "salary_range": "Rs 12,000 - Rs 24,500",
+        "in_hand_salary": "Rs 22,000 - Rs 26,000/mo",
+        "selection_stages": [
+                "Basic Objective Aptitude Test",
+                "Local Language Test",
+                "Document Verification"
+        ],
+        "apply_url": "https://www.ibps.in",
+        "notification_pdf_url": "https://www.ibps.in/rrb_attendant.pdf",
+        "official_portal": "https://www.ibps.in",
+        "description": "Rural bank branch attendant and office peon assisting branch managers with ledger records and customer front-desk assistance. District-level posting.",
+        "syllabus_highlights": [
+                "Basic Reasoning (Directions, Series)",
+                "Simple Numerical Ability (Class 8 standard)",
+                "Basic Local Language knowledge"
+        ],
+        "preparation_tips": "Prepare basic arithmetic and local state geography. Exam is easy and straightforward."
+},
+    {
+        "id": "district-court-peon-orderly",
+        "title": "District & Sessions Courts Office Peon, Orderly & Process Server",
+        "department": "District Judiciary / State High Courts Subordinate Services",
+        "tier": 1,
+        "tier_label": "8th Pass (Entry Level)",
+        "sector": "Judiciary",
+        "state": "All-India",
+        "vacancies": 4200,
+        "status": "open",
+        "app_start_date": "2026-09-05",
+        "app_end_date": "2026-10-05",
+        "exam_date": "Direct Interview & Skill Assessment",
+        "min_age": 18,
+        "max_age_general": 40,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 5
+        },
+        "education_level": "8th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India (State District Courts)",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Class 8th pass certificate from recognized school",
+                "Cycle riding knowledge"
+        ],
+        "pay_level": "Pay Level 1 (State 7th Pay Matrix)",
+        "salary_range": "Rs 18,000 - Rs 56,900",
+        "in_hand_salary": "Rs 25,000 - Rs 31,000/mo",
+        "selection_stages": [
+                "Shortlisting based on 8th Class Marks / Basic Screening",
+                "Personal Interview / Document Check"
+        ],
+        "apply_url": "https://districts.ecourts.gov.in",
+        "notification_pdf_url": "https://districts.ecourts.gov.in/notices/peon_orderly.pdf",
+        "official_portal": "https://districts.ecourts.gov.in",
+        "description": "Class IV judicial staff recruitment in District Courts across states. Minimum 8th class pass; direct interview or basic non-negative marking test. High upper age limit up to 40 years.",
+        "syllabus_highlights": [
+                "Elementary reading/writing in regional language, basic general knowledge, cycle riding capability."
+        ],
+        "preparation_tips": "Carry original 8th pass marksheet and school transfer certificate. Dress neatly for the district judge interview."
+},
+    {
+        "id": "fci-watchman-chowkidar",
+        "title": "Food Corporation of India (FCI) Watchman / Security Guard",
+        "department": "Food Corporation of India, Ministry of Consumer Affairs, Food & Public Distribution",
+        "tier": 1,
+        "tier_label": "8th Pass (Entry Level)",
+        "sector": "Food & Civil Supplies",
+        "state": "All-India",
+        "vacancies": 2850,
+        "status": "open",
+        "app_start_date": "2026-09-10",
+        "app_end_date": "2026-10-10",
+        "exam_date": "November 2026",
+        "min_age": 18,
+        "max_age_general": 25,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 3
+        },
+        "education_level": "8th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": True,
+        "physical_standards": {
+                "running": "Running 1000m in 5 min 30 sec (Male) / 800m in 5 min (Female)",
+                "long_jump": "Long jump 3.2 meters (Male) / 2.5 meters (Female)"
+        },
+        "special_skills": [],
+        "pay_level": "Scale W-1 (IDA Pay Scale)",
+        "salary_range": "Rs 23,300 - Rs 64,000",
+        "in_hand_salary": "Rs 31,000 - Rs 36,000/mo",
+        "selection_stages": [
+                "Written Examination (120 MCQs - 90 Minutes, NO Negative Marking)",
+                "Physical Endurance Test (PET - Qualifying)"
+        ],
+        "apply_url": "https://fci.gov.in",
+        "notification_pdf_url": "https://fci.gov.in/watchman_notice.pdf",
+        "official_portal": "https://fci.gov.in",
+        "description": "Central PSU watchman recruitment in FCI grain depots and silos. Minimum educational qualification is Class 8th Pass. Basic 90-minute general test with NO negative marking.",
+        "syllabus_highlights": [
+                "General Knowledge",
+                "Basic Arithmetic (Class 8th standard)",
+                "Basic English Language",
+                "Current Affairs"
+        ],
+        "preparation_tips": "There is NO negative marking in FCI Watchman test, so attempt all 120 questions. Practice 1 km daily running."
+},
+    {
+        "id": "state-animal-attendant-pashu-parichar",
+        "title": "Animal Attendant (Pashu Parichar - Animal Husbandry Department)",
+        "department": "Department of Animal Husbandry & Veterinary Services",
+        "tier": 1,
+        "tier_label": "10th / 8th Pass (Entry Level)",
+        "sector": "Agriculture & Animal Husbandry",
+        "state": "Rajasthan",
+        "vacancies": 5934,
+        "status": "open",
+        "app_start_date": "2026-08-15",
+        "app_end_date": "2026-09-30",
+        "exam_date": "December 2026",
+        "min_age": 18,
+        "max_age_general": 40,
+        "age_relaxation": {
+                "OBC": 5,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 5
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "State Quota (Rajasthan Domicile + Open to All-India UR)",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [],
+        "pay_level": "Pay Matrix Level-1",
+        "salary_range": "Rs 17,700 - Rs 56,200",
+        "in_hand_salary": "Rs 23,000 - Rs 28,000/mo",
+        "selection_stages": [
+                "Single Stage Written Test (150 MCQs: 105 General + 45 Animal Care)",
+                "Document Verification"
+        ],
+        "apply_url": "https://rsmssb.rajasthan.gov.in",
+        "notification_pdf_url": "https://rsmssb.rajasthan.gov.in/pashu_parichar.pdf",
+        "official_portal": "https://rsmssb.rajasthan.gov.in",
+        "description": "Non-technical Class IV veterinary hospital assistant. Assisting veterinary surgeons in cattle clinics and state livestock farms. Huge 5,900+ vacancies with simple syllabus.",
+        "syllabus_highlights": [
+                "Part A (105 Marks): Rajasthan History, Geography, General Science, Elementary Maths",
+                "Part B (45 Marks): Cattle breeds, artificial insemination basics, animal diseases, milk production"
+        ],
+        "preparation_tips": "Focus on Part B animal husbandry basics (cow/buffalo breeds, vaccination calendar) which carries 30% of total score."
+},
+    {
+        "id": "anganwadi-worker-helper",
+        "title": "Anganwadi Worker & Anganwadi Helper (ICDS Direct Merit Recruitment)",
+        "department": "Ministry of Women & Child Development (State ICDS Directorates)",
+        "tier": 1,
+        "tier_label": "8th / 10th Pass (Direct Merit)",
+        "sector": "Women & Child Development",
+        "state": "All-India",
+        "vacancies": 24500,
+        "status": "open",
+        "app_start_date": "2026-09-01",
+        "app_end_date": "2026-10-15",
+        "exam_date": "Direct Merit Based (No Written Exam)",
+        "min_age": 18,
+        "max_age_general": 35,
+        "age_relaxation": {
+                "SC": 5,
+                "ST": 5,
+                "OBC": 3,
+                "PwD": 10,
+                "EWS": 0
+        },
+        "education_level": "8th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India (Local Gram Panchayat / Ward Residence Required)",
+        "gender_allowed": "female",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Local village / ward resident",
+                "Class 8th / 10th pass"
+        ],
+        "pay_level": "Honorarium + State Incentives",
+        "salary_range": "Rs 8,500 - Rs 14,500/mo",
+        "in_hand_salary": "Rs 10,000 - Rs 14,500/mo",
+        "selection_stages": [
+                "Direct Merit List based on 8th/10th Board Marks + Local Residence Weightage",
+                "Panchayat / Ward Document Verification"
+        ],
+        "apply_url": "https://wcd.nic.in",
+        "notification_pdf_url": "https://wcd.nic.in/anganwadi_circular.pdf",
+        "official_portal": "https://wcd.nic.in",
+        "description": "Grassroots village and ward child healthcare/nutrition worker. Exclusively for local women candidates. 100% direct merit selection based on 8th/10th marks without written exam.",
+        "syllabus_highlights": [
+                "No written exam! Selection is 100% based on school board marks and local residency."
+        ],
+        "preparation_tips": "Ensure domicile and caste certificates are issued by local Tehsildar/Sub-Divisional Magistrate."
+},
+    {
+        "id": "railway-rrc-trade-apprentice",
+        "title": "Railway RRC Trade Apprentice (Direct Merit - 20% Group D Reservation)",
+        "department": "Railway Recruitment Cells (RRC - Eastern, Western, Northern, Central Zonal Railways)",
+        "tier": 1,
+        "tier_label": "10th / ITI Pass (Direct Merit)",
+        "sector": "Railways",
+        "state": "All-India",
+        "vacancies": 11200,
+        "status": "open",
+        "app_start_date": "2026-09-01",
+        "app_end_date": "2026-09-30",
+        "exam_date": "Direct Merit Based (No Written Exam)",
+        "min_age": 15,
+        "max_age_general": 24,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 3
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate"
+        ],
+        "education_streams": [
+                "any",
+                "fitter",
+                "electrical",
+                "mechanical"
+        ],
+        "min_percentage": 50,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "10th pass with 50% marks + National Trade Certificate in relevant ITI trade"
+        ],
+        "pay_level": "Monthly Apprentice Stipend",
+        "salary_range": "Rs 8,000 - Rs 11,500/mo",
+        "in_hand_salary": "Rs 9,500 - Rs 11,500/mo + 20% Railway Job Quota",
+        "selection_stages": [
+                "Merit Ranking (50% Class 10th Marks + 50% ITI Marks)",
+                "Document Verification & Medical Check (NO EXAM)"
+        ],
+        "apply_url": "https://rrcer.org",
+        "notification_pdf_url": "https://rrcer.org/Notice_Apprentice.pdf",
+        "official_portal": "https://indianrailways.gov.in",
+        "description": "Zonal railway workshop apprenticeship. 100% direct merit selection without any written exam. Completing this training gives an exclusive 20% reserved quota in Railway Group D posts!",
+        "syllabus_highlights": [
+                "No written exam! Selected directly on Class 10 and ITI marks."
+        ],
+        "preparation_tips": "Keep ITI NCVT/SCVT certificate and 10th marksheet ready; apply as early as possible."
+},
+    {
+        "id": "staff-car-driver-postal-govt",
+        "title": "Staff Car Driver (Ordinary Grade - Central Ministries & India Post)",
+        "department": "Ministry of Communications / Central Government Motor Services",
+        "tier": 1,
+        "tier_label": "10th Pass + License (Low Competition)",
+        "sector": "Transport & Logistics",
+        "state": "All-India",
+        "vacancies": 1840,
+        "status": "open",
+        "app_start_date": "2026-09-05",
+        "app_end_date": "2026-10-12",
+        "exam_date": "Driving Trade Test & Simple GK",
+        "min_age": 18,
+        "max_age_general": 27,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "ExSM": 3
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate"
+        ],
+        "education_streams": [
+                "any",
+                "driving_license"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Valid Driving License for Light & Heavy Motor Vehicles (LMV/HMV)",
+                "3 years driving experience",
+                "Basic motor mechanism knowledge"
+        ],
+        "pay_level": "Pay Level 2 (7th CPC)",
+        "salary_range": "Rs 19,900 - Rs 63,200",
+        "in_hand_salary": "Rs 31,000 - Rs 36,000/mo",
+        "selection_stages": [
+                "Stage 1: Basic Written Test on Traffic Signs & Road Regulations (80m)",
+                "Stage 2: Practical Driving & Reversing Skill Test (Qualifying)"
+        ],
+        "apply_url": "https://indiapost.gov.in",
+        "notification_pdf_url": "https://indiapost.gov.in/driver_notification.pdf",
+        "official_portal": "https://indiapost.gov.in",
+        "description": "Staff car driver in Central Ministries and Postal Mail Motor Services. Because of commercial/HMV driving license requirement, applicant pool is very small, resulting in exceptionally low competition.",
+        "syllabus_highlights": [
+                "Motor Vehicle Act regulations",
+                "Traffic rules and road sign recognition",
+                "Simple trouble-shooting (puncture, oil check, spark plug)",
+                "Basic numerical aptitude"
+        ],
+        "preparation_tips": "Practice parallel parking, reverse driving between cones, and learn standard MV Act traffic penalty sections."
+},
+    {
+        "id": "ssc-stenographer-grade-c-d",
+        "title": "SSC Stenographer Grade 'C' & 'D' (Central Ministries & Departments)",
+        "department": "Staff Selection Commission (SSC)",
+        "tier": 1,
+        "tier_label": "12th Pass (Low Competition)",
+        "sector": "SSC",
+        "state": "All-India",
+        "vacancies": 2006,
+        "status": "open",
+        "app_start_date": "2026-08-20",
+        "app_end_date": "2026-09-24",
+        "exam_date": "November 2026",
+        "min_age": 18,
+        "max_age_general": 30,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "ExSM": 3
+        },
+        "education_level": "12th",
+        "allowed_education": [
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any",
+                "stenography"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Shorthand speed 80 wpm (Grade D) / 100 wpm (Grade C)",
+                "Computer transcription"
+        ],
+        "pay_level": "Pay Level 4 (Grade D) & Level 6 (Grade C)",
+        "salary_range": "Rs 25,500 - Rs 1,12,400",
+        "in_hand_salary": "Rs 42,000 - Rs 62,000/mo",
+        "selection_stages": [
+                "CBT Written Exam (Reasoning 50m + English 100m + GK 50m - NO MATHS)",
+                "Stenography Shorthand Dictation & Transcription Skill Test"
+        ],
+        "apply_url": "https://ssc.gov.in",
+        "notification_pdf_url": "https://ssc.gov.in/steno_notice.pdf",
+        "official_portal": "https://ssc.gov.in",
+        "description": "Personal assistant and stenographer in Central Government Ministries. Has NO Mathematics section in written test! Because 95%+ of general aspirants don't know shorthand, cutoffs are drastically lower than CGL/CHSL.",
+        "syllabus_highlights": [
+                "General Intelligence & Reasoning (50 Qs)",
+                "General Awareness (50 Qs)",
+                "English Language & Comprehension (100 Qs - Grammar, Vocab, Reading)",
+                "NO Mathematics!"
+        ],
+        "preparation_tips": "No Maths section makes this ideal for students afraid of quantitative aptitude! Practice daily shorthand dictation at 85 wpm."
+},
+    {
+        "id": "state-bus-conductor-transport",
+        "title": "State Transport Bus Conductor & Ticket Controller (UPSRTC / WBTC / MSRTC)",
+        "department": "State Road Transport Corporations (SRTC)",
+        "tier": 1,
+        "tier_label": "10th / 12th Pass (Entry Level)",
+        "sector": "Transport & Logistics",
+        "state": "All-India",
+        "vacancies": 3850,
+        "status": "open",
+        "app_start_date": "2026-09-08",
+        "app_end_date": "2026-10-18",
+        "exam_date": "Direct Merit / Basic Screening",
+        "min_age": 18,
+        "max_age_general": 40,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "ExSM": 5
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [
+                "Valid Conductor License issued by Regional Transport Office (RTO)",
+                "St. John Ambulance First Aid Certificate"
+        ],
+        "pay_level": "Grade Pay 1900 (Level-2)",
+        "salary_range": "Rs 19,900 - Rs 53,200",
+        "in_hand_salary": "Rs 26,000 - Rs 32,000/mo + Kilometre Running Allowance",
+        "selection_stages": [
+                "Direct Merit list based on 10th/12th Marks (80%) + ITI/Diploma bonus (20%)",
+                "Document Verification"
+        ],
+        "apply_url": "https://upsrtc.up.gov.in",
+        "notification_pdf_url": "https://upsrtc.up.gov.in/conductor_recruitment.pdf",
+        "official_portal": "https://upsrtc.up.gov.in",
+        "description": "Conductor and ticketing staff across state government public bus fleets. Generous upper age limit up to 40 years, direct merit selection with high vacancies.",
+        "syllabus_highlights": [
+                "Direct merit selection based on 10th/12th marks percentage; no high-stress written test."
+        ],
+        "preparation_tips": "Obtain the mandatory Conductor License and 7-day First Aid certificate from St. John Ambulance Association."
+},
+    {
+        "id": "municipal-safai-karmachari-ward-boy",
+        "title": "Municipal Corporation Ward Attendant & Safai Karmachari",
+        "department": "Urban Local Bodies / Municipal Corporations & Civil Hospitals",
+        "tier": 1,
+        "tier_label": "8th Pass (Entry Level)",
+        "sector": "Municipal & Local Bodies",
+        "state": "All-India",
+        "vacancies": 7500,
+        "status": "open",
+        "app_start_date": "2026-09-01",
+        "app_end_date": "2026-10-05",
+        "exam_date": "Physical Agility & Trade Test (No Written Exam)",
+        "min_age": 18,
+        "max_age_general": 40,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "ExSM": 5
+        },
+        "education_level": "8th",
+        "allowed_education": [
+                "8th",
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India (Urban Local Bodies across States)",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [],
+        "pay_level": "Pay Band 1 (Level 1)",
+        "salary_range": "Rs 18,000 - Rs 56,900",
+        "in_hand_salary": "Rs 24,500 - Rs 29,000/mo",
+        "selection_stages": [
+                "Physical Fitness & Trade Assessment (No complex written exam)",
+                "Document Verification & Medical Fitness"
+        ],
+        "apply_url": "https://urban.gov.in",
+        "notification_pdf_url": "https://urban.gov.in/safai_recruitment.pdf",
+        "official_portal": "https://urban.gov.in",
+        "description": "Permanent civic support staff in municipal civil hospitals and urban local bodies. Class 8th pass minimum, direct physical/trade assessment without written exam.",
+        "syllabus_highlights": [
+                "No written exam! Selection is based on trade skill assessment and physical agility."
+        ],
+        "preparation_tips": "Ensure original 8th pass certificate, Aadhaar card, and residence certificate are up to date."
+},
+    {
+        "id": "india-post-mts-mail-guard",
+        "title": "India Post Multi-Tasking Staff (MTS) & Mail Guard",
+        "department": "Department of Posts, Ministry of Communications",
+        "tier": 1,
+        "tier_label": "10th Pass (Entry Level)",
+        "sector": "Postal",
+        "state": "All-India",
+        "vacancies": 6850,
+        "status": "open",
+        "app_start_date": "2026-09-12",
+        "app_end_date": "2026-10-15",
+        "exam_date": "December 2026",
+        "min_age": 18,
+        "max_age_general": 25,
+        "age_relaxation": {
+                "OBC": 3,
+                "SC": 5,
+                "ST": 5,
+                "PwD": 10,
+                "EWS": 0,
+                "ExSM": 3
+        },
+        "education_level": "10th",
+        "allowed_education": [
+                "10th",
+                "12th",
+                "iti",
+                "diploma",
+                "graduate",
+                "post_graduate"
+        ],
+        "education_streams": [
+                "any"
+        ],
+        "min_percentage": 0,
+        "state_eligibility": "All-India",
+        "gender_allowed": "all",
+        "physical_required": False,
+        "physical_standards": None,
+        "special_skills": [],
+        "pay_level": "Pay Level 1 (7th CPC)",
+        "salary_range": "Rs 18,000 - Rs 56,900",
+        "in_hand_salary": "Rs 27,500 - Rs 31,500/mo",
+        "selection_stages": [
+                "Paper-I: Basic Aptitude (100 Marks - Basic GK, Maths, Reasoning)",
+                "Paper-II: Local Language Translation (Qualifying)"
+        ],
+        "apply_url": "https://indiapost.gov.in",
+        "notification_pdf_url": "https://indiapost.gov.in/mts_notice.pdf",
+        "official_portal": "https://indiapost.gov.in",
+        "description": "Handling sorting, delivery dispatch, and counter support across postal divisions. 10th pass qualification with elementary local language knowledge; steady central government pay and job security.",
+        "syllabus_highlights": [
+                "General Awareness",
+                "Basic Mathematics (Ratio, Percentage, Profit & Loss)",
+                "Reasoning Ability",
+                "Local Language Translation"
+        ],
+        "preparation_tips": "Focus on Class 10 standard NCERT arithmetic; Paper-II local language is only qualifying in nature."
+}
 ]
 
 def get_all_jobs():

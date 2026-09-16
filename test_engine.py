@@ -165,6 +165,45 @@ def run_tests():
     assert top_up_job["state"] == "Uttar Pradesh", "Rank 1 job must belong to Uttar Pradesh"
     print("  [PASS] (Home state government jobs successfully spotlighted and prioritized at the top!)")
 
+    # Test 9: 8th Pass Candidate (20 yrs, UR)
+    profile_8th = {
+        "age": 20,
+        "category": "UR",
+        "education_level": "8th",
+        "stream": "any",
+        "percentage": 68.0,
+        "gender": "male"
+    }
+    res_8th = match_all_jobs(profile_8th)
+    print(f"\nTest 9 [8th Pass Candidate, 20 yrs, UR]:")
+    print(f"  Eligible: {len(res_8th['eligible'])} jobs (Vacancies: {res_8th['total_eligible_vacancies']:,})")
+    eligible_8th_ids = [j["job_id"] for j in res_8th["eligible"]]
+    ineligible_8th_ids = [j["job_id"] for j in res_8th["ineligible"]]
+    assert "district-court-peon-orderly" in eligible_8th_ids, "District Court Peon must be eligible for 8th pass"
+    assert "fci-watchman-chowkidar" in eligible_8th_ids, "FCI Watchman must be eligible for 8th pass"
+    assert "municipal-safai-karmachari-ward-boy" in eligible_8th_ids, "Municipal Ward Attendant must be eligible for 8th pass"
+    assert "india-post-gds" in ineligible_8th_ids, "India Post GDS (10th required) must be blocked for 8th pass"
+    assert "ssc-mts-havaldar" in ineligible_8th_ids, "SSC MTS (10th required) must be blocked for 8th pass"
+    assert "ssc-cgl" in ineligible_8th_ids, "SSC CGL (Graduate required) must be blocked for 8th pass"
+    print("  [PASS] (8th pass candidate accurately matches 8th pass jobs and blocked from higher tier exams)")
+
+    # Test 10: Gramin Bank & Low Competition Entry
+    profile_grad = {
+        "age": 24,
+        "category": "OBC",
+        "education_level": "graduate",
+        "stream": "any",
+        "percentage": 62.0,
+        "gender": "male"
+    }
+    res_grad = match_all_jobs(profile_grad)
+    eligible_grad_ids = [j["job_id"] for j in res_grad["eligible"]]
+    assert "ibps-rrb-gramin-bank-clerk" in eligible_grad_ids, "IBPS RRB Gramin Bank Clerk must be eligible"
+    assert "bank-sub-staff-peon-cbi" in eligible_grad_ids, "Bank Sub-Staff must be eligible"
+    assert "ssc-stenographer-grade-c-d" in eligible_grad_ids, "SSC Stenographer must be eligible"
+    print("\nTest 10 [Gramin Bank & Low Competition Access]:")
+    print("  [PASS] (Gramin Bank Office Assistant, Bank Sub-Staff, and SSC Steno accessible)")
+
     print("\n==================================================")
     print("ALL TESTS PASSED SUCCESSFULLY! (100% Deterministic Accuracy)")
     print("==================================================")

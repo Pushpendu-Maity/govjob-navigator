@@ -8,6 +8,7 @@ from jobs_data import get_all_jobs
 
 # Hierarchical education levels: lower levels are satisfied by higher levels
 EDUCATION_HIERARCHY = {
+    "8th": 0,
     "10th": 1,
     "12th": 2,
     "iti": 2,
@@ -131,7 +132,9 @@ def evaluate_eligibility(candidate_profile, job):
         "law": ["law", "llb", "ba_llb", "bba_llb", "llm"],
         "education": ["education", "bed", "deled", "btc"],
         "nursing": ["nursing", "bsc_nursing", "gnm"],
-        "12th_pcm": ["12th_pcm", "pcm", "science_pcm"]
+        "12th_pcm": ["12th_pcm", "pcm", "science_pcm"],
+        "driving_license": ["driving_license", "driver", "staff_car_driver", "lmv", "hmv"],
+        "stenography": ["stenography", "shorthand", "steno", "steno_c_d"]
     }
     
     stream_ok = False
@@ -146,12 +149,18 @@ def evaluate_eligibility(candidate_profile, job):
                 matched = True
                 break
                 
+        def get_stream_display(st):
+            if st == "cse_it": return "Graduation in CSE / CS & IT"
+            if st == "bca": return "BCA"
+            if st == "driving_license": return "Motor Vehicle Driving License"
+            if st == "stenography": return "Stenography & Shorthand"
+            return st.title()
+
+        display_name = get_stream_display(user_stream)
         if matched:
             stream_ok = True
-            display_name = "Graduation in CSE / CS & IT" if user_stream == "cse_it" else (user_stream.upper() if user_stream == "bca" else user_stream.title())
             met.append(f"Stream criteria satisfied: Candidate's field '{display_name}' matches required discipline.")
         else:
-            display_name = "Graduation in CSE / CS & IT" if user_stream == "cse_it" else (user_stream.upper() if user_stream == "bca" else user_stream.title())
             unmet.append(f"Specialization required: Job specifically requires '{', '.join(job_streams).title()}', candidate stream is '{display_name}'.")
 
     # 4. PERCENTAGE / CUTOFF CHECK
