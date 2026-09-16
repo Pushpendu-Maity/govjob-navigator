@@ -240,9 +240,28 @@
         </div>
 
         <form @submit.prevent="runEligibilityCheck(true)" class="space-y-5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             
-            <!-- 1. Date of Birth -->
+            <!-- 1. Job Sector Preference (Govt vs Private vs Both) -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Sector Target</span>
+                <span class="text-[10px] text-emerald-600 font-bold uppercase">Filter</span>
+              </label>
+              <select x-model="profile.job_type_pref"
+                      class="w-full bg-slate-50 border border-emerald-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-bold text-slate-900 shadow-xs">
+                <option value="govt">🏛️ Government Jobs Only</option>
+                <option value="private">🏢 Private Company Jobs Only</option>
+                <option value="both">🌐 Both (Govt & Private)</option>
+              </select>
+              <div class="text-[11px] text-slate-500 mt-1">
+                <span x-show="profile.job_type_pref === 'govt'" class="text-emerald-700 font-semibold">UPSC, SSC, Rly, Bank & States</span>
+                <span x-show="profile.job_type_pref === 'private'" class="text-blue-700 font-semibold">IT, AI, Retail, Delivery & Mass hiring</span>
+                <span x-show="profile.job_type_pref === 'both'" class="text-purple-700 font-semibold">All govt & private vacancies</span>
+              </div>
+            </div>
+
+            <!-- 2. Date of Birth -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Date of Birth (DOB)
@@ -255,7 +274,7 @@
               </div>
             </div>
 
-            <!-- 2. Reservation Category -->
+            <!-- 3. Reservation Category -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Category / Reservation
@@ -275,7 +294,7 @@
               </div>
             </div>
 
-            <!-- 3. Home State / Domicile -->
+            <!-- 4. Home State / Domicile -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                 <span>Home State</span>
@@ -314,7 +333,7 @@
               </div>
             </div>
 
-            <!-- 4. Highest Education Level -->
+            <!-- 5. Highest Education Level -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Highest Qualification
@@ -334,7 +353,7 @@
               </div>
             </div>
 
-            <!-- 5. Academic Stream / Discipline -->
+            <!-- 6. Academic Stream / Discipline -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Stream / Specialization
@@ -348,6 +367,7 @@
                 <option value="civil">Engineering - Civil</option>
                 <option value="cse_it">Graduation in CSE or CS & IT (B.Tech / B.E.)</option>
                 <option value="bca">BCA (Bachelor of Computer Applications)</option>
+                <option value="data_science">Data Science, AI & Machine Learning</option>
                 <option value="driving_license">Motor Vehicle Driving License (Driver - Low Competition)</option>
                 <option value="stenography">Stenography & Shorthand (Steno Grade C/D - Low Competition)</option>
                 <option value="law">Law - LL.B. / B.A. LL.B.</option>
@@ -356,7 +376,7 @@
                 <option value="fitter">ITI - Fitter / Electrician</option>
               </select>
               <div class="text-[11px] text-slate-500 mt-1">
-                Matches specialized PSU, skill-based & technical jobs.
+                Matches specialized tech, IT, data & corporate jobs.
               </div>
             </div>
 
@@ -444,11 +464,12 @@
           <div>
             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Assessment Result</span>
             <div class="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5">
-              You are eligible for <span class="text-emerald-600 font-black" x-text="assessmentResults.summary.eligible_count"></span> Government Jobs 
+              You are eligible for <span class="text-emerald-600 font-black" x-text="assessmentResults.summary.eligible_count"></span> 
+              <span x-text="profile.job_type_pref === 'private' ? 'Private Company Jobs' : (profile.job_type_pref === 'both' ? 'Jobs (Govt & Private)' : 'Government Jobs')"></span>
               (<span class="text-amber-600 font-black" x-text="assessmentResults.summary.total_vacancies.toLocaleString()"></span> Vacancies)!
             </div>
             <p class="text-xs text-slate-500 mt-0.5">
-              Profile: <span x-text="profile.age + ' yrs'"></span> • Category: <span class="font-semibold" x-text="profile.category"></span> • State: <span class="font-bold text-emerald-700" x-text="profile.domicile"></span> • Degree: <span class="font-semibold" x-text="profile.education_level.toUpperCase()"></span>
+              Sector: <span class="font-bold text-emerald-700" x-text="profile.job_type_pref === 'both' ? 'Govt & Private' : (profile.job_type_pref === 'private' ? 'Private Companies Only' : 'Govt Only')"></span> • Age: <span x-text="profile.age + ' yrs'"></span> • Category: <span class="font-semibold" x-text="profile.category"></span> • State: <span class="font-bold text-emerald-700" x-text="profile.domicile"></span> • Stream: <span class="font-semibold" x-text="profile.stream.toUpperCase()"></span>
             </p>
           </div>
 
@@ -503,6 +524,24 @@
                             }" x-text="job.tier_label"></span>
                       <span class="text-[11px] font-semibold text-slate-500" x-text="'• ' + job.sector"></span>
                       
+                      <!-- Job Type Badge: Private vs Govt -->
+                      <span x-show="job.job_type === 'private'"
+                            class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 border border-blue-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="building-2" class="w-3 h-3 text-blue-600"></i>
+                        <span>Private Company</span>
+                      </span>
+                      <span x-show="profile.job_type_pref === 'both' && job.job_type !== 'private'"
+                            class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold text-[10px] px-1.5 py-0.5 rounded-full">
+                        <i data-lucide="landmark" class="w-2.5 h-2.5 text-emerald-600"></i>
+                        <span>Govt</span>
+                      </span>
+                      <!-- Easy Entry / Mass Hiring Badge -->
+                      <span x-show="job.is_easy_entry"
+                            class="inline-flex items-center gap-1 bg-teal-100 text-teal-900 border border-teal-300 font-black text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="zap" class="w-3 h-3 text-teal-600"></i>
+                        <span>⚡ Easy Entry / Mass Hiring</span>
+                      </span>
+
                       <!-- Home State Badge -->
                       <span x-show="job.is_home_state" class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-[11px] px-2 py-0.5 rounded-full shadow-xs">
                         <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600"></i>
@@ -598,6 +637,22 @@
                   <div class="flex items-start justify-between gap-2">
                     <div class="flex flex-wrap items-center gap-1.5">
                       <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Near Match</span>
+                      <!-- Job Type Badge -->
+                      <span x-show="job.job_type === 'private'"
+                            class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 border border-blue-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="building-2" class="w-3 h-3 text-blue-600"></i>
+                        <span>Private</span>
+                      </span>
+                      <span x-show="profile.job_type_pref === 'both' && job.job_type !== 'private'"
+                            class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold text-[10px] px-1.5 py-0.5 rounded-full">
+                        <i data-lucide="landmark" class="w-2.5 h-2.5 text-emerald-600"></i>
+                        <span>Govt</span>
+                      </span>
+                      <span x-show="job.is_easy_entry"
+                            class="inline-flex items-center gap-1 bg-teal-100 text-teal-900 border border-teal-300 font-black text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="zap" class="w-3 h-3 text-teal-600"></i>
+                        <span>⚡ Easy Entry</span>
+                      </span>
                       <span x-show="job.is_home_state" class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-[11px] px-2 py-0.5 rounded-full shadow-xs">
                         <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600"></i>
                         <span>Your State Govt Job (<span x-text="job.state"></span>)</span>
@@ -790,8 +845,19 @@
         </div>
 
         <!-- Filter Chips Row -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           
+          <!-- Job Type Filter (Govt vs Private) -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Job Sector</label>
+            <select x-model="selectedJobType" @change="fetchCatalog()"
+                    class="w-full bg-slate-50 border border-emerald-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-800">
+              <option value="">All (Govt & Private)</option>
+              <option value="govt">🏛️ Government Jobs Only</option>
+              <option value="private">🏢 Private Companies Only</option>
+            </select>
+          </div>
+
           <!-- Tier Filter -->
           <div>
             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Career Tier</label>
@@ -812,6 +878,11 @@
             <select x-model="selectedSector" @change="fetchCatalog()"
                     class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
               <option value="">All Sectors</option>
+              <option value="IT & Software">IT & Software (TCS, Infosys, Google, MS)</option>
+              <option value="AI & Data Science">AI & Data Science (Fractal, Tiger, AWS)</option>
+              <option value="Logistics & Delivery">Logistics & Delivery (Swiggy, Amazon, Blinkit)</option>
+              <option value="Retail">Retail & Supermarkets (Reliance, DMart)</option>
+              <option value="Security Services">Security & Facility (SIS India)</option>
               <option value="Banking">Banking (SBI / IBPS / Peon)</option>
               <option value="Gramin Bank">Gramin Bank (Rural Regional RRB)</option>
               <option value="Railways">Railways (RRB / Trade Apprentice)</option>
@@ -893,6 +964,22 @@
                           'badge-tier-4': job.tier === 4,
                           'badge-tier-5': job.tier === 5,
                         }" x-text="job.tier_label"></span>
+                  <!-- Job Type Badge -->
+                  <span x-show="job.job_type === 'private'"
+                        class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 border border-blue-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                    <i data-lucide="building-2" class="w-3 h-3 text-blue-600"></i>
+                    <span>Private</span>
+                  </span>
+                  <span x-show="job.job_type !== 'private'"
+                        class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold text-[10px] px-1.5 py-0.5 rounded-full">
+                    <i data-lucide="landmark" class="w-2.5 h-2.5 text-emerald-600"></i>
+                    <span>Govt</span>
+                  </span>
+                  <span x-show="job.is_easy_entry"
+                        class="inline-flex items-center gap-1 bg-teal-100 text-teal-900 border border-teal-300 font-black text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                    <i data-lucide="zap" class="w-3 h-3 text-teal-600"></i>
+                    <span>⚡ Easy Entry</span>
+                  </span>
                   <span x-show="job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     <i data-lucide="map-pin" class="w-2.5 h-2.5 text-emerald-600"></i>
                     <span x-text="job.state"></span>
@@ -1113,7 +1200,17 @@
         <div class="flex items-start justify-between border-b border-slate-100 pb-4">
           <div>
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800" x-text="activeJobModal ? (activeJobModal.tier_label || 'Government Exam') : ''"></span>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                    :class="activeJobModal && activeJobModal.job_type === 'private' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'"
+                    x-text="activeJobModal ? (activeJobModal.tier_label || 'Direct Hiring') : ''"></span>
+              <span x-show="activeJobModal && activeJobModal.job_type === 'private'"
+                    class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 border border-blue-200 text-xs font-bold px-2 py-0.5 rounded-full">
+                <i data-lucide="building-2" class="w-3 h-3 text-blue-600"></i> Private Company
+              </span>
+              <span x-show="activeJobModal && activeJobModal.is_easy_entry"
+                    class="inline-flex items-center gap-1 bg-teal-100 text-teal-900 border border-teal-300 text-xs font-black px-2 py-0.5 rounded-full">
+                <i data-lucide="zap" class="w-3 h-3 text-teal-600"></i> ⚡ Easy Entry / Mass Hiring
+              </span>
               <span class="text-xs font-semibold text-slate-500" x-text="activeJobModal ? activeJobModal.sector : ''"></span>
               <span x-show="activeJobModal && activeJobModal.state" class="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">
                 <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600"></i>
@@ -1137,15 +1234,15 @@
           <i data-lucide="map-pin" class="w-4 h-4 text-blue-600 shrink-0 mt-0.5"></i>
           <div>
             <strong class="text-blue-900 block font-bold">Jurisdiction & Domicile Scope:</strong>
-            <span class="text-blue-800" x-text="activeJobModal ? (activeJobModal.state_eligibility || ('Recruitment by Government of ' + activeJobModal.state)) : ''"></span>
+            <span class="text-blue-800" x-text="activeJobModal ? (activeJobModal.state_eligibility || ('Recruitment by ' + (activeJobModal.job_type === 'private' ? activeJobModal.department : ('Government of ' + activeJobModal.state)))) : ''"></span>
           </div>
         </div>
 
-        <!-- 7th Pay Commission Salary Breakdown -->
+        <!-- Salary Breakdown -->
         <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4">
           <div class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
             <i data-lucide="indian-rupee" class="w-4 h-4 text-emerald-700"></i>
-            7th Central Pay Commission (CPC) Pay Scale
+            <span x-text="activeJobModal && activeJobModal.job_type === 'private' ? 'Salary Package & CTC / Monthly In-Hand' : '7th Central Pay Commission (CPC) Pay Scale'"></span>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
             <div>
@@ -1203,11 +1300,11 @@
           <a :href="activeJobModal ? activeJobModal.notification_pdf_url : '#'" target="_blank"
              class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5">
             <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
-            Download Notification PDF
+            <span x-text="activeJobModal && activeJobModal.job_type === 'private' ? 'Official Careers / Posting Link' : 'Download Notification PDF'"></span>
           </a>
           <a :href="activeJobModal ? activeJobModal.apply_url : '#'" target="_blank"
              class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
-            Official Online Apply Portal <i data-lucide="external-link" class="w-4 h-4"></i>
+            <span x-text="activeJobModal && activeJobModal.job_type === 'private' ? 'Direct Company Apply Link' : 'Official Online Apply Portal'"></span> <i data-lucide="external-link" class="w-4 h-4"></i>
           </a>
         </div>
 

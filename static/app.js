@@ -10,6 +10,7 @@ document.addEventListener('alpine:init', () => {
     
     // User Profile for Eligibility Assessment
     profile: {
+      job_type_pref: 'govt', // 'govt' | 'private' | 'both'
       dob: '2002-06-15',
       age: 24,
       category: 'UR',
@@ -49,6 +50,7 @@ document.addEventListener('alpine:init', () => {
     catalogJobs: [],
     isLoadingCatalog: false,
     searchQuery: '',
+    selectedJobType: '', // '' (all) | 'govt' | 'private'
     selectedTier: '',
     selectedSector: '',
     selectedState: '',
@@ -162,6 +164,7 @@ document.addEventListener('alpine:init', () => {
       try {
         const params = new URLSearchParams();
         if (this.searchQuery) params.append('search', this.searchQuery);
+        if (this.selectedJobType) params.append('job_type', this.selectedJobType);
         if (this.selectedTier) params.append('tier', this.selectedTier);
         if (this.selectedSector) params.append('sector', this.selectedSector);
         if (this.selectedState) params.append('state', this.selectedState);

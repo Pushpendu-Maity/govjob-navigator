@@ -204,6 +204,107 @@ def run_tests():
     print("\nTest 10 [Gramin Bank & Low Competition Access]:")
     print("  [PASS] (Gramin Bank Office Assistant, Bank Sub-Staff, and SSC Steno accessible)")
 
+    # Test 11: Sector Preference Filtering (Govt vs Private vs Both)
+    # Profile 11A: CSE Graduate requesting ONLY Government jobs
+    profile_cse_govt = {
+        "age": 23,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "cse_it",
+        "percentage": 75.0,
+        "gender": "male",
+        "job_type_pref": "govt"
+    }
+    res_cse_govt = match_all_jobs(profile_cse_govt)
+    print(f"\nTest 11A [Target: Government Jobs Only]:")
+    print(f"  Analyzed: {res_cse_govt['total_jobs_analyzed']} jobs | Eligible: {len(res_cse_govt['eligible'])}")
+    assert all(j["job_type"] == "govt" for j in res_cse_govt["eligible"]), "Govt-only pref must only return govt jobs"
+    assert not any("tcs" in j["job_id"] or "google" in j["job_id"] for j in res_cse_govt["eligible"]), "Private jobs must be excluded"
+    print("  [PASS] (Strictly 0 private company jobs when Government is selected)")
+
+    # Profile 11B: CSE Graduate requesting ONLY Private Company jobs
+    profile_cse_private = {
+        "age": 23,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "cse_it",
+        "percentage": 75.0,
+        "gender": "male",
+        "job_type_pref": "private"
+    }
+    res_cse_private = match_all_jobs(profile_cse_private)
+    print(f"\nTest 11B [Target: Private Company Jobs Only]:")
+    print(f"  Analyzed: {res_cse_private['total_jobs_analyzed']} jobs | Eligible: {len(res_cse_private['eligible'])}")
+    assert all(j["job_type"] == "private" for j in res_cse_private["eligible"]), "Private-only pref must only return private jobs"
+    assert not any(j["job_id"] in ["ssc-cgl", "upsc-civil-services", "rrb-alp"] for j in res_cse_private["eligible"]), "Govt exams must be excluded"
+    pvt_ids = [j["job_id"] for j in res_cse_private["eligible"]]
+    assert "tcs-nqt-ninja-digital" in pvt_ids, "TCS NQT must be eligible for CSE graduate"
+    assert "google-india-swe" in pvt_ids, "Google SWE must be eligible for CSE graduate"
+    assert "infosys-fresher-se" in pvt_ids, "Infosys must be eligible for CSE graduate"
+    assert "microsoft-india-swe" in pvt_ids, "Microsoft must be eligible for CSE graduate"
+    print("  [PASS] (Private company roles for CSE: TCS, Infosys, Google, Microsoft verified)")
+
+    # Test 12: Data Science & AI Candidate
+    profile_ds = {
+        "age": 24,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "data_science",
+        "percentage": 78.0,
+        "gender": "male",
+        "job_type_pref": "private"
+    }
+    res_ds = match_all_jobs(profile_ds)
+    ds_eligible_ids = [j["job_id"] for j in res_ds["eligible"]]
+    print(f"\nTest 12 [Data Science & AI Graduate in Private Sector]:")
+    print(f"  Eligible Private Jobs: {len(res_ds['eligible'])}")
+    assert "fractal-analytics-data-scientist" in ds_eligible_ids, "Fractal Analytics must be eligible for Data Science"
+    assert "tiger-analytics-ml-engineer" in ds_eligible_ids, "Tiger Analytics must be eligible for Data Science"
+    assert "aws-cloud-support-associate" in ds_eligible_ids, "AWS Cloud & ML must be eligible for Data Science"
+    assert "ibm-india-software-ai" in ds_eligible_ids, "IBM AI must be eligible for Data Science"
+    print("  [PASS] (Fractal, Tiger Analytics, AWS ML, and IBM Data Science successfully matched)")
+
+    # Test 13: 8th Pass Candidate - Private Entry Level / Easy Entry
+    profile_8th_pvt = {
+        "age": 20,
+        "category": "UR",
+        "education_level": "8th",
+        "stream": "any",
+        "percentage": 60.0,
+        "gender": "male",
+        "job_type_pref": "private"
+    }
+    res_8th_pvt = match_all_jobs(profile_8th_pvt)
+    pvt_8th_ids = [j["job_id"] for j in res_8th_pvt["eligible"]]
+    pvt_8th_inel = [j["job_id"] for j in res_8th_pvt["ineligible"]]
+    print(f"\nTest 13 [8th Pass Easy Entry Private Jobs]:")
+    print(f"  Eligible 8th Pass Private Jobs: {len(res_8th_pvt['eligible'])}")
+    assert "zomato-delivery-partner" in pvt_8th_ids, "Zomato must accept 8th pass"
+    assert "swiggy-instamart-delivery" in pvt_8th_ids, "Swiggy must accept 8th pass"
+    assert "sis-india-security-guard" in pvt_8th_ids, "SIS Security Guard must accept 8th pass"
+    assert "zepto-blinkit-rider" in pvt_8th_ids, "Blinkit rider must accept 8th pass"
+    assert "apollo-hospital-patient-care" in pvt_8th_ids, "Apollo Hospital patient care must accept 8th pass"
+    assert "amazon-warehouse-operations" in pvt_8th_inel, "Amazon warehouse (requires 10th) must be ineligible for 8th pass"
+    assert "google-india-swe" in pvt_8th_inel, "Google SWE must NOT be eligible for 8th pass"
+    print("  [PASS] (8th pass matches delivery, hospital support, and security; higher jobs blocked)")
+
+    # Test 14: Both Mode (Govt + Private)
+    profile_both = {
+        "age": 22,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "cse_it",
+        "percentage": 70.0,
+        "gender": "male",
+        "job_type_pref": "both"
+    }
+    res_both = match_all_jobs(profile_both)
+    both_types = set(j["job_type"] for j in res_both["eligible"])
+    print(f"\nTest 14 [Target: Both Govt & Private Companies]:")
+    print(f"  Analyzed: {res_both['total_jobs_analyzed']} total jobs | Eligible: {len(res_both['eligible'])}")
+    assert "govt" in both_types and "private" in both_types, "Both mode must return both govt and private jobs"
+    print("  [PASS] (Both mode returns combined ecosystem of Government and Corporate jobs)")
+
     print("\n==================================================")
     print("ALL TESTS PASSED SUCCESSFULLY! (100% Deterministic Accuracy)")
     print("==================================================")

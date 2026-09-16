@@ -17,6 +17,22 @@ EDUCATION_HIERARCHY = {
     "post_graduate": 5
 }
 
+STREAM_ALIASES = {
+    "cse_it": ["cse_it", "computer_science", "cs", "it", "b.tech cse", "b.e. cse", "data_science"],
+    "computer_science": ["cse_it", "computer_science", "cs", "it", "data_science"],
+    "bca": ["bca", "computer_applications", "bachelor of computer applications"],
+    "data_science": ["data_science", "ai", "machine_learning", "data_analytics", "big_data", "cse_it", "computer_science", "bca", "statistics", "mathematics"],
+    "mechanical": ["mechanical", "automobile", "fitter"],
+    "electrical": ["electrical", "electrician", "eee"],
+    "civil": ["civil"],
+    "law": ["law", "llb", "ba_llb", "bba_llb", "llm"],
+    "education": ["education", "bed", "deled", "btc"],
+    "nursing": ["nursing", "bsc_nursing", "gnm"],
+    "12th_pcm": ["12th_pcm", "pcm", "science_pcm"],
+    "driving_license": ["driving_license", "driver", "staff_car_driver", "lmv", "hmv"],
+    "stenography": ["stenography", "shorthand", "steno", "steno_c_d"]
+}
+
 def parse_date(date_str):
     """Safely parse ISO date string."""
     try:
@@ -122,21 +138,6 @@ def evaluate_eligibility(candidate_profile, job):
     user_stream = candidate_profile.get("stream", "any").lower().strip()
     job_streams = [s.lower().strip() for s in job.get("education_streams", ["any"])]
     
-    STREAM_ALIASES = {
-        "cse_it": ["cse_it", "computer_science", "cs", "it", "b.tech cse", "b.e. cse"],
-        "computer_science": ["cse_it", "computer_science", "cs", "it"],
-        "bca": ["bca", "computer_applications", "bachelor of computer applications"],
-        "mechanical": ["mechanical", "automobile", "fitter"],
-        "electrical": ["electrical", "electrician", "eee"],
-        "civil": ["civil"],
-        "law": ["law", "llb", "ba_llb", "bba_llb", "llm"],
-        "education": ["education", "bed", "deled", "btc"],
-        "nursing": ["nursing", "bsc_nursing", "gnm"],
-        "12th_pcm": ["12th_pcm", "pcm", "science_pcm"],
-        "driving_license": ["driving_license", "driver", "staff_car_driver", "lmv", "hmv"],
-        "stenography": ["stenography", "shorthand", "steno", "steno_c_d"]
-    }
-    
     stream_ok = False
     if "any" in job_streams or user_stream == "any":
         stream_ok = True
@@ -152,6 +153,7 @@ def evaluate_eligibility(candidate_profile, job):
         def get_stream_display(st):
             if st == "cse_it": return "Graduation in CSE / CS & IT"
             if st == "bca": return "BCA"
+            if st == "data_science": return "Data Science, AI & Machine Learning"
             if st == "driving_license": return "Motor Vehicle Driving License"
             if st == "stenography": return "Stenography & Shorthand"
             return st.title()
@@ -234,7 +236,15 @@ def evaluate_eligibility(candidate_profile, job):
         else:
             notes.append(f"State Recruitment ({job_state}): May require state domicile certificate or local language proficiency.")
 
-    # 8. COMPUTE FINAL STATUS & SCORE
+    # 8. ADD JOB TYPE & EASY ENTRY NOTES
+    is_private = job.get("job_type") == "private"
+    is_easy = job.get("is_easy_entry", False)
+    if is_private:
+        notes.append("Employment Type: Private Corporate Direct Hiring / Campus Drive")
+    if is_easy:
+        met.append("⚡ High Selection Rate / Easy Entry: Walk-in drive / mass recruitment with rapid offer rollout.")
+
+    # 9. COMPUTE FINAL STATUS & SCORE
     total_checks = len(met) + len(unmet)
     score = int((len(met) / total_checks) * 100) if total_checks > 0 else 0
     
@@ -257,6 +267,8 @@ def evaluate_eligibility(candidate_profile, job):
         "tier": job["tier"],
         "tier_label": job["tier_label"],
         "sector": job["sector"],
+        "job_type": job.get("job_type", "govt"),
+        "is_easy_entry": is_easy,
         "state": job_state,
         "is_home_state": is_home_state,
         "state_eligibility": state_elig,
@@ -285,13 +297,23 @@ def evaluate_eligibility(candidate_profile, job):
 
 def match_all_jobs(candidate_profile):
     """
-    Run evaluation against all government jobs in the database.
+    Run evaluation against jobs in the database.
+    Supports candidate sector preference:
+      - 'govt': Government / PSU jobs only (default)
+      - 'private': Private company & mass recruiter jobs only
+      - 'both': Both Government & Private company jobs
     Returns partitioned results:
         eligible: jobs candidate can apply for right now or soon
         near_match: jobs candidate is close to qualifying
         ineligible: jobs where criteria are not met
     """
     all_jobs = get_all_jobs()
+    
+    # Filter by candidate's sector preference (govt vs private vs both)
+    job_pref = (candidate_profile.get("job_type_pref") or "govt").strip().lower()
+    if job_pref in ["govt", "private"]:
+        all_jobs = [j for j in all_jobs if j.get("job_type", "govt").lower() == job_pref]
+
     results = {
         "eligible": [],
         "near_match": [],

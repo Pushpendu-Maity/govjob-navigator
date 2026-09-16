@@ -46,10 +46,16 @@ def list_jobs():
     state = request.args.get("state", "").strip()
     status = request.args.get("status", "").strip()
     edu = request.args.get("education", "").strip()
+    job_type = request.args.get("job_type", "").strip().lower()
     sort_by = request.args.get("sort", "status")  # 'deadline', 'vacancies', 'status', 'tier'
     
     filtered = []
     for j in jobs:
+        # Job Type filter (govt vs private)
+        if job_type and job_type in ["govt", "private"]:
+            if j.get("job_type", "govt").lower() != job_type:
+                continue
+
         # Search match
         if search:
             match_str = f"{j['title']} {j['department']} {j['sector']} {j.get('state', '')} {j['description']}".lower()
@@ -126,7 +132,8 @@ def check_eligibility():
         "is_ex_serviceman": bool(data.get("is_ex_serviceman", False)),
         "domicile": data.get("domicile", "All-India").strip(),
         "height_cm": float(data.get("height_cm")) if data.get("height_cm") else None,
-        "check_physical": bool(data.get("check_physical", False))
+        "check_physical": bool(data.get("check_physical", False)),
+        "job_type_pref": data.get("job_type_pref", "govt").strip().lower()
     }
     
     # If DOB is provided, calculate exact age

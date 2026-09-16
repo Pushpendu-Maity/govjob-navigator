@@ -96,6 +96,37 @@ def run_api_tests():
     assert data_wb_elig["eligible"][0]["state"] == "West Bengal", "Top job state must be West Bengal"
     print("8. [POST /api/check-eligibility (WB Domicile)]: 200 OK (WB Police prioritized at Rank 1 with is_home_state=True)")
 
+    # 9. Test /api/jobs?job_type=private and ?job_type=govt
+    res_pvt = client.get("/api/jobs?job_type=private")
+    assert res_pvt.status_code == 200, "Failed /api/jobs?job_type=private"
+    data_pvt = res_pvt.get_json()
+    assert len(data_pvt["jobs"]) == 32, f"Expected 32 private jobs, got {len(data_pvt['jobs'])}"
+    assert all(j.get("job_type") == "private" for j in data_pvt["jobs"]), "All jobs must have job_type=private"
+
+    res_govt = client.get("/api/jobs?job_type=govt")
+    assert res_govt.status_code == 200, "Failed /api/jobs?job_type=govt"
+    data_govt = res_govt.get_json()
+    assert len(data_govt["jobs"]) == 47, f"Expected 47 govt jobs, got {len(data_govt['jobs'])}"
+    assert all(j.get("job_type", "govt") == "govt" for j in data_govt["jobs"]), "All jobs must have job_type=govt"
+    print(f"9. [GET /api/jobs?job_type=private|govt]: 200 OK (32 Private Company Jobs, 47 Government Jobs)")
+
+    # 10. Test /api/check-eligibility with job_type_pref="private"
+    payload_pvt_elig = {
+        "age": 22,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "cse_it",
+        "percentage": 75.0,
+        "gender": "male",
+        "job_type_pref": "private"
+    }
+    res_pvt_chk = client.post("/api/check-eligibility", json=payload_pvt_elig)
+    assert res_pvt_chk.status_code == 200, "Failed /api/check-eligibility with job_type_pref"
+    data_pvt_chk = res_pvt_chk.get_json()
+    assert all(j["job_type"] == "private" for j in data_pvt_chk["eligible"]), "All eligible must be private"
+    assert data_pvt_chk["summary"]["eligible_count"] >= 20, "CSE graduate must be eligible for at least 20 private jobs"
+    print(f"10. [POST /api/check-eligibility (Sector: Private Only)]: 200 OK ({data_pvt_chk['summary']['eligible_count']} Private Jobs matched for CSE)")
+
     print("\n==================================================")
     print("ALL API AND ENDPOINT TESTS PASSED SUCCESSFULLY!")
     print("==================================================")
