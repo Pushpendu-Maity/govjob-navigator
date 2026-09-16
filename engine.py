@@ -121,17 +121,38 @@ def evaluate_eligibility(candidate_profile, job):
     user_stream = candidate_profile.get("stream", "any").lower().strip()
     job_streams = [s.lower().strip() for s in job.get("education_streams", ["any"])]
     
+    STREAM_ALIASES = {
+        "cse_it": ["cse_it", "computer_science", "cs", "it", "b.tech cse", "b.e. cse"],
+        "computer_science": ["cse_it", "computer_science", "cs", "it"],
+        "bca": ["bca", "computer_applications", "bachelor of computer applications"],
+        "mechanical": ["mechanical", "automobile", "fitter"],
+        "electrical": ["electrical", "electrician", "eee"],
+        "civil": ["civil"],
+        "law": ["law", "llb", "ba_llb", "bba_llb", "llm"],
+        "education": ["education", "bed", "deled", "btc"],
+        "nursing": ["nursing", "bsc_nursing", "gnm"],
+        "12th_pcm": ["12th_pcm", "pcm", "science_pcm"]
+    }
+    
     stream_ok = False
-    if "any" in job_streams:
+    if "any" in job_streams or user_stream == "any":
         stream_ok = True
         met.append("Degree stream: Any stream / specialization is eligible.")
     else:
-        # Match specific stream or aliases
-        if user_stream in job_streams or any(s in user_stream for s in job_streams):
+        user_aliases = STREAM_ALIASES.get(user_stream, [user_stream])
+        matched = False
+        for alias in user_aliases:
+            if alias in job_streams or any(alias in js for js in job_streams):
+                matched = True
+                break
+                
+        if matched:
             stream_ok = True
-            met.append(f"Stream criteria satisfied: Candidate's field '{user_stream.title()}' matches required discipline.")
+            display_name = "Graduation in CSE / CS & IT" if user_stream == "cse_it" else (user_stream.upper() if user_stream == "bca" else user_stream.title())
+            met.append(f"Stream criteria satisfied: Candidate's field '{display_name}' matches required discipline.")
         else:
-            unmet.append(f"Specialization required: Job specifically requires '{', '.join(job_streams).title()}', candidate stream is '{user_stream.title()}'.")
+            display_name = "Graduation in CSE / CS & IT" if user_stream == "cse_it" else (user_stream.upper() if user_stream == "bca" else user_stream.title())
+            unmet.append(f"Specialization required: Job specifically requires '{', '.join(job_streams).title()}', candidate stream is '{display_name}'.")
 
     # 4. PERCENTAGE / CUTOFF CHECK
     user_percentage = float(candidate_profile.get("percentage", 65.0) or 0)

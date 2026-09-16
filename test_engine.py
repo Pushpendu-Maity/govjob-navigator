@@ -95,6 +95,43 @@ def run_tests():
     assert "india-post-gds" in eligible_senior_ids, "India Post GDS max age 40 should allow 33yo UR"
     print("  [PASS]")
 
+    # Test 6: BCA Candidate (22 yrs, UR)
+    profile_bca = {
+        "age": 22,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "bca",
+        "percentage": 70.0,
+        "gender": "male"
+    }
+    res_bca = match_all_jobs(profile_bca)
+    print(f"\nTest 6 [BCA Candidate, 22 yrs, UR]:")
+    print(f"  Eligible: {len(res_bca['eligible'])} jobs")
+    eligible_bca_ids = [j["job_id"] for j in res_bca["eligible"]]
+    ineligible_bca_ids = [j["job_id"] for j in res_bca["ineligible"]]
+    assert "ssc-cgl" in eligible_bca_ids, "SSC CGL must be eligible for BCA"
+    assert "ibps-po" in eligible_bca_ids, "IBPS PO must be eligible for BCA"
+    assert "gate-psu-ongc-iocl" not in eligible_bca_ids, "GATE PSU B.Tech should not accept BCA"
+    print("  [PASS] (BCA gets Graduate & DRDO jobs; B.Tech GATE PSU correctly blocked)")
+
+    # Test 7: B.Tech CSE / IT Candidate (23 yrs, UR)
+    profile_cse = {
+        "age": 23,
+        "category": "UR",
+        "education_level": "graduate",
+        "stream": "cse_it",
+        "percentage": 72.0,
+        "gender": "male"
+    }
+    res_cse = match_all_jobs(profile_cse)
+    print(f"\nTest 7 [Graduation in CSE / CS & IT, 23 yrs, UR]:")
+    print(f"  Eligible: {len(res_cse['eligible'])} jobs")
+    eligible_cse_ids = [j["job_id"] for j in res_cse["eligible"]]
+    assert "gate-psu-ongc-iocl" in eligible_cse_ids, "GATE PSU must accept B.Tech CSE/IT"
+    assert "drdo-ceptam-technician" in eligible_cse_ids, "DRDO CEPTAM must accept B.Tech CSE/IT"
+    assert "ssc-cgl" in eligible_cse_ids, "SSC CGL must accept B.Tech CSE/IT"
+    print("  [PASS] (B.Tech CSE/IT qualifies for GATE PSUs, DRDO, CGL, and Bank PO)")
+
     print("\n==================================================")
     print("ALL TESTS PASSED SUCCESSFULLY! (100% Deterministic Accuracy)")
     print("==================================================")
