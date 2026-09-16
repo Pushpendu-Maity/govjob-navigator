@@ -240,7 +240,7 @@
         </div>
 
         <form @submit.prevent="runEligibilityCheck(true)" class="space-y-5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             
             <!-- 1. Date of Birth -->
             <div>
@@ -275,7 +275,46 @@
               </div>
             </div>
 
-            <!-- 3. Highest Education Level -->
+            <!-- 3. Home State / Domicile -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Home State</span>
+                <span class="text-[10px] text-emerald-600 font-bold lowercase">state quota</span>
+              </label>
+              <select x-model="profile.domicile"
+                      class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium text-slate-800">
+                <option value="All-India">All-India / Central (Any State)</option>
+                <option value="West Bengal">West Bengal (WBPSC, WBPRB)</option>
+                <option value="Uttar Pradesh">Uttar Pradesh (UPPSC, UPPRPB)</option>
+                <option value="Bihar">Bihar (BPSC, BPSSC)</option>
+                <option value="Maharashtra">Maharashtra (MPSC, Maha Police)</option>
+                <option value="Rajasthan">Rajasthan (RPSC, Raj Police)</option>
+                <option value="Delhi">Delhi (DSSSB, Delhi Police)</option>
+                <option value="Madhya Pradesh">Madhya Pradesh (MPPSC, MP Police)</option>
+                <option value="Odisha">Odisha (OPSC, OSSSC)</option>
+                <option value="Andhra Pradesh">Andhra Pradesh (APPSC)</option>
+                <option value="Assam">Assam (APSC)</option>
+                <option value="Chhattisgarh">Chhattisgarh (CGPSC)</option>
+                <option value="Gujarat">Gujarat (GPSC)</option>
+                <option value="Haryana">Haryana (HPSC, HSSC)</option>
+                <option value="Himachal Pradesh">Himachal Pradesh (HPPSC)</option>
+                <option value="Jammu & Kashmir">Jammu & Kashmir (JKSSB)</option>
+                <option value="Jharkhand">Jharkhand (JPSC, JSSC)</option>
+                <option value="Karnataka">Karnataka (KPSC)</option>
+                <option value="Kerala">Kerala (Kerala PSC)</option>
+                <option value="Punjab">Punjab (PPSC)</option>
+                <option value="Tamil Nadu">Tamil Nadu (TNPSC)</option>
+                <option value="Telangana">Telangana (TGPSC)</option>
+                <option value="Uttarakhand">Uttarakhand (UKPSC)</option>
+              </select>
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                <span x-show="profile.domicile === 'All-India'">Central & All-India jobs</span>
+                <span x-show="profile.domicile !== 'All-India'" class="text-emerald-700 font-bold" x-text="'Spotlights ' + profile.domicile + ' State Jobs'"></span>
+              </div>
+            </div>
+
+            <!-- 4. Highest Education Level -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Highest Qualification
@@ -294,7 +333,7 @@
               </div>
             </div>
 
-            <!-- 4. Academic Stream / Discipline -->
+            <!-- 5. Academic Stream / Discipline -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Stream / Specialization
@@ -406,7 +445,7 @@
               (<span class="text-amber-600 font-black" x-text="assessmentResults.summary.total_vacancies.toLocaleString()"></span> Vacancies)!
             </div>
             <p class="text-xs text-slate-500 mt-0.5">
-              Profile: <span x-text="profile.age + ' yrs'"></span> • Category: <span class="font-semibold" x-text="profile.category"></span> • Degree: <span class="font-semibold" x-text="profile.education_level.toUpperCase()"></span>
+              Profile: <span x-text="profile.age + ' yrs'"></span> • Category: <span class="font-semibold" x-text="profile.category"></span> • State: <span class="font-bold text-emerald-700" x-text="profile.domicile"></span> • Degree: <span class="font-semibold" x-text="profile.education_level.toUpperCase()"></span>
             </p>
           </div>
 
@@ -445,11 +484,12 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <template x-for="job in assessmentResults.eligible" :key="job.job_id">
-              <div class="bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-md transition p-5 flex flex-col justify-between">
+              <div class="bg-white rounded-2xl border hover:border-emerald-400 hover:shadow-md transition p-5 flex flex-col justify-between"
+                   :class="job.is_home_state ? 'border-emerald-400 bg-emerald-50/15 ring-2 ring-emerald-300/60' : 'border-slate-200'">
                 <div>
                   <!-- Header row -->
                   <div class="flex items-start justify-between gap-2">
-                    <div>
+                    <div class="flex flex-wrap items-center gap-1.5">
                       <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
                             :class="{
                               'badge-tier-1': job.tier === 1,
@@ -458,11 +498,22 @@
                               'badge-tier-4': job.tier === 4,
                               'badge-tier-5': job.tier === 5,
                             }" x-text="job.tier_label"></span>
-                      <span class="text-[11px] font-semibold text-slate-500 ml-1.5" x-text="'• ' + job.sector"></span>
+                      <span class="text-[11px] font-semibold text-slate-500" x-text="'• ' + job.sector"></span>
+                      
+                      <!-- Home State Badge -->
+                      <span x-show="job.is_home_state" class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-[11px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600"></i>
+                        <span>Your State Govt Job (<span x-text="job.state"></span>)</span>
+                      </span>
+                      <!-- Other State Badge -->
+                      <span x-show="!job.is_home_state && job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                        <i data-lucide="map-pin" class="w-2.5 h-2.5 text-slate-400"></i>
+                        <span x-text="job.state"></span>
+                      </span>
                     </div>
 
                     <!-- Bookmark button -->
-                    <button @click="toggleBookmark(job.job_id)" class="text-slate-400 hover:text-amber-500 transition">
+                    <button @click="toggleBookmark(job.job_id)" class="text-slate-400 hover:text-amber-500 transition shrink-0">
                       <i data-lucide="bookmark" class="w-5 h-5" :class="isBookmarked(job.job_id) ? 'fill-amber-500 text-amber-500' : ''"></i>
                     </button>
                   </div>
@@ -526,11 +577,22 @@
         <div x-show="activeResultTab === 'near_match'" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <template x-for="job in assessmentResults.near_match" :key="job.job_id">
-              <div class="bg-white rounded-2xl border border-amber-200 p-5 flex flex-col justify-between">
+              <div class="bg-white rounded-2xl border p-5 flex flex-col justify-between"
+                   :class="job.is_home_state ? 'border-amber-400 bg-amber-50/15 ring-1 ring-amber-300' : 'border-amber-200'">
                 <div>
-                  <div class="flex items-start justify-between">
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Near Match</span>
-                    <span class="text-xs font-bold text-amber-700" x-text="job.match_score + '% Match'"></span>
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Near Match</span>
+                      <span x-show="job.is_home_state" class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-[11px] px-2 py-0.5 rounded-full shadow-xs">
+                        <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600"></i>
+                        <span>Your State Govt Job (<span x-text="job.state"></span>)</span>
+                      </span>
+                      <span x-show="!job.is_home_state && job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                        <i data-lucide="map-pin" class="w-2.5 h-2.5 text-slate-400"></i>
+                        <span x-text="job.state"></span>
+                      </span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-700 shrink-0" x-text="job.match_score + '% Match'"></span>
                   </div>
                   <h3 class="font-bold text-slate-900 text-base mt-2" x-text="job.job_title"></h3>
                   <p class="text-xs text-slate-500 font-medium" x-text="job.department"></p>
@@ -565,9 +627,15 @@
             <template x-for="job in assessmentResults.ineligible" :key="job.job_id">
               <div class="bg-white rounded-2xl border border-slate-200 opacity-90 p-5 flex flex-col justify-between">
                 <div>
-                  <div class="flex items-start justify-between">
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600" x-text="job.tier_label"></span>
-                    <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Criteria Not Met</span>
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600" x-text="job.tier_label"></span>
+                      <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Criteria Not Met</span>
+                      <span x-show="job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                        <i data-lucide="map-pin" class="w-2.5 h-2.5 text-slate-400"></i>
+                        <span x-text="job.state"></span>
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-slate-800 text-base mt-2" x-text="job.job_title"></h3>
                   <p class="text-xs text-slate-500 font-medium" x-text="job.department"></p>
@@ -697,7 +765,7 @@
         </div>
 
         <!-- Filter Chips Row -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           
           <!-- Tier Filter -->
           <div>
@@ -730,6 +798,24 @@
               <option value="PSU">Maharatna / Navratna PSUs</option>
               <option value="Judiciary">Judiciary & Courts</option>
               <option value="Healthcare">Healthcare & AIIMS</option>
+            </select>
+          </div>
+
+          <!-- State Filter -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">State / Region</label>
+            <select x-model="selectedState" @change="fetchCatalog()"
+                    class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium">
+              <option value="">All States & Central</option>
+              <option value="All-India">Central / All-India</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Odisha">Odisha</option>
             </select>
           </div>
 
@@ -767,14 +853,20 @@
           <div class="bg-white rounded-2xl border border-slate-200 hover:shadow-md transition p-5 flex flex-col justify-between">
             <div>
               <div class="flex items-start justify-between gap-2">
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                      :class="{
-                        'badge-tier-1': job.tier === 1,
-                        'badge-tier-2': job.tier === 2,
-                        'badge-tier-3': job.tier === 3,
-                        'badge-tier-4': job.tier === 4,
-                        'badge-tier-5': job.tier === 5,
-                      }" x-text="job.tier_label"></span>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                        :class="{
+                          'badge-tier-1': job.tier === 1,
+                          'badge-tier-2': job.tier === 2,
+                          'badge-tier-3': job.tier === 3,
+                          'badge-tier-4': job.tier === 4,
+                          'badge-tier-5': job.tier === 5,
+                        }" x-text="job.tier_label"></span>
+                  <span x-show="job.state && job.state !== 'All-India'" class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    <i data-lucide="map-pin" class="w-2.5 h-2.5 text-emerald-600"></i>
+                    <span x-text="job.state"></span>
+                  </span>
+                </div>
                 <button @click="toggleBookmark(job.id)" class="text-slate-400 hover:text-amber-500">
                   <i data-lucide="bookmark" class="w-4 h-4" :class="isBookmarked(job.id) ? 'fill-amber-500 text-amber-500' : ''"></i>
                 </button>
@@ -979,9 +1071,17 @@
         <!-- Modal Header -->
         <div class="flex items-start justify-between border-b border-slate-100 pb-4">
           <div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800" x-text="activeJobModal ? (activeJobModal.tier_label || 'Government Exam') : ''"></span>
               <span class="text-xs font-semibold text-slate-500" x-text="activeJobModal ? activeJobModal.sector : ''"></span>
+              <span x-show="activeJobModal && activeJobModal.state" class="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+                <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600"></i>
+                <span x-text="activeJobModal.state"></span>
+              </span>
+              <span x-show="activeJobModal && activeJobModal.is_home_state" class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs px-2 py-0.5 rounded-full">
+                <i data-lucide="shield-check" class="w-3 h-3 text-emerald-600"></i>
+                <span>Home State Quota Applies</span>
+              </span>
             </div>
             <h2 class="text-xl font-extrabold text-slate-900 mt-1.5" x-text="activeJobModal ? (activeJobModal.title || activeJobModal.job_title) : ''"></h2>
             <p class="text-xs text-slate-500" x-text="activeJobModal ? activeJobModal.department : ''"></p>
@@ -989,6 +1089,15 @@
           <button @click="closeJobModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
+        </div>
+
+        <!-- State & Domicile Eligibility Notice -->
+        <div x-show="activeJobModal && (activeJobModal.state_eligibility || (activeJobModal.state && activeJobModal.state !== 'All-India'))" class="bg-blue-50/70 border border-blue-200 rounded-2xl p-3.5 text-xs flex items-start gap-2.5">
+          <i data-lucide="map-pin" class="w-4 h-4 text-blue-600 shrink-0 mt-0.5"></i>
+          <div>
+            <strong class="text-blue-900 block font-bold">Jurisdiction & Domicile Scope:</strong>
+            <span class="text-blue-800" x-text="activeJobModal ? (activeJobModal.state_eligibility || ('Recruitment by Government of ' + activeJobModal.state)) : ''"></span>
+          </div>
         </div>
 
         <!-- 7th Pay Commission Salary Breakdown -->

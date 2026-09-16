@@ -72,6 +72,30 @@ def run_api_tests():
     assert data_alert["success"] is True, "Alert subscription failed"
     print("6. [POST /api/subscribe-alert]: 200 OK (Alert registered successfully)")
 
+    # 7. Test /api/jobs?state=West+Bengal
+    res_wb = client.get("/api/jobs?state=West+Bengal")
+    assert res_wb.status_code == 200, "Failed /api/jobs?state=West+Bengal"
+    data_wb = res_wb.get_json()
+    assert all(j["state"] == "West Bengal" for j in data_wb["jobs"]), "State filter should only return West Bengal jobs"
+    print(f"7. [GET /api/jobs?state=West+Bengal]: 200 OK ({len(data_wb['jobs'])} West Bengal state jobs returned)")
+
+    # 8. Test /api/check-eligibility with Domicile
+    payload_wb = {
+        "age": 22,
+        "category": "UR",
+        "education_level": "10th",
+        "stream": "any",
+        "percentage": 65.0,
+        "gender": "male",
+        "domicile": "West Bengal"
+    }
+    res_wb_elig = client.post("/api/check-eligibility", json=payload_wb)
+    assert res_wb_elig.status_code == 200, "Failed /api/check-eligibility with domicile"
+    data_wb_elig = res_wb_elig.get_json()
+    assert data_wb_elig["eligible"][0]["is_home_state"] is True, "Top job must have is_home_state=True"
+    assert data_wb_elig["eligible"][0]["state"] == "West Bengal", "Top job state must be West Bengal"
+    print("8. [POST /api/check-eligibility (WB Domicile)]: 200 OK (WB Police prioritized at Rank 1 with is_home_state=True)")
+
     print("\n==================================================")
     print("ALL API AND ENDPOINT TESTS PASSED SUCCESSFULLY!")
     print("==================================================")

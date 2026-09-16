@@ -51,6 +51,7 @@ document.addEventListener('alpine:init', () => {
     searchQuery: '',
     selectedTier: '',
     selectedSector: '',
+    selectedState: '',
     selectedStatus: '',
     selectedEdu: '',
     sortBy: 'status',
@@ -163,6 +164,7 @@ document.addEventListener('alpine:init', () => {
         if (this.searchQuery) params.append('search', this.searchQuery);
         if (this.selectedTier) params.append('tier', this.selectedTier);
         if (this.selectedSector) params.append('sector', this.selectedSector);
+        if (this.selectedState) params.append('state', this.selectedState);
         if (this.selectedStatus) params.append('status', this.selectedStatus);
         if (this.selectedEdu) params.append('education', this.selectedEdu);
         if (this.sortBy) params.append('sort', this.sortBy);

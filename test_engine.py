@@ -130,7 +130,40 @@ def run_tests():
     assert "gate-psu-ongc-iocl" in eligible_cse_ids, "GATE PSU must accept B.Tech CSE/IT"
     assert "drdo-ceptam-technician" in eligible_cse_ids, "DRDO CEPTAM must accept B.Tech CSE/IT"
     assert "ssc-cgl" in eligible_cse_ids, "SSC CGL must accept B.Tech CSE/IT"
-    print("  [PASS] (B.Tech CSE/IT qualifies for GATE PSUs, DRDO, CGL, and Bank PO)")
+    # Test 8: Home State / Domicile Prioritization
+    profile_wb = {
+        "age": 23,
+        "category": "UR",
+        "education_level": "10th",
+        "stream": "any",
+        "percentage": 65.0,
+        "gender": "male",
+        "domicile": "West Bengal"
+    }
+    res_wb = match_all_jobs(profile_wb)
+    print(f"\nTest 8 [Home State Prioritization - West Bengal Domicile, 10th Pass]:")
+    print(f"  Eligible: {len(res_wb['eligible'])} jobs")
+    top_job = res_wb["eligible"][0]
+    print(f"  Top Prioritized Job: {top_job['job_title']} (State: {top_job['state']}, Home State: {top_job['is_home_state']})")
+    assert top_job["is_home_state"] is True, "Home state job must be prioritized at rank 1"
+    assert top_job["state"] == "West Bengal", "Rank 1 job must belong to candidate's home state"
+    
+    # Verify UP Candidate gets UP Police prioritized
+    profile_up = {
+        "age": 21,
+        "category": "UR",
+        "education_level": "12th",
+        "stream": "any",
+        "percentage": 70.0,
+        "gender": "male",
+        "domicile": "Uttar Pradesh"
+    }
+    res_up = match_all_jobs(profile_up)
+    top_up_job = res_up["eligible"][0]
+    print(f"  Top UP Prioritized Job: {top_up_job['job_title']} (Home State: {top_up_job['is_home_state']})")
+    assert top_up_job["is_home_state"] is True, "UP home state job must be prioritized"
+    assert top_up_job["state"] == "Uttar Pradesh", "Rank 1 job must belong to Uttar Pradesh"
+    print("  [PASS] (Home state government jobs successfully spotlighted and prioritized at the top!)")
 
     print("\n==================================================")
     print("ALL TESTS PASSED SUCCESSFULLY! (100% Deterministic Accuracy)")
@@ -138,3 +171,4 @@ def run_tests():
 
 if __name__ == "__main__":
     run_tests()
+

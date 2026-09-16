@@ -200,7 +200,32 @@ def evaluate_eligibility(candidate_profile, job):
     elif job_has_physical:
         notes.append("Uniformed post: Involves physical standard test (PST) & running endurance test (PET).")
 
-    # 7. COMPUTE FINAL STATUS & SCORE
+    # 7. STATE DOMICILE EVALUATION
+    user_domicile = (candidate_profile.get("domicile") or "All-India").strip()
+    job_state = (job.get("state") or "All-India").strip()
+    state_elig = job.get("state_eligibility", "All-India")
+    
+    is_home_state = False
+    if job_state == "All-India":
+        is_home_state = False
+        met.append("Jurisdiction: Central Government / All-India recruitment (Open to all Indian States & UTs).")
+    elif user_domicile != "All-India" and user_domicile.lower() == job_state.lower():
+        is_home_state = True
+        met.append(f"📍 Home State Govt Job: You belong to {job_state} and receive full domicile reservation & quota benefits.")
+    elif user_domicile == "All-India":
+        is_home_state = False
+        if "open to all-india" in state_elig.lower() or "open to all" in state_elig.lower():
+            met.append(f"State Recruitment ({job_state}): Open to All-India candidates.")
+        else:
+            notes.append(f"State Recruitment ({job_state}): May require {job_state} domicile or local language proficiency.")
+    else:
+        is_home_state = False
+        if "open to all-india" in state_elig.lower() or "open to all" in state_elig.lower():
+            met.append(f"Other State Quota: Candidates from {user_domicile} can apply under Open / Unreserved category.")
+        else:
+            notes.append(f"State Recruitment ({job_state}): May require state domicile certificate or local language proficiency.")
+
+    # 8. COMPUTE FINAL STATUS & SCORE
     total_checks = len(met) + len(unmet)
     score = int((len(met) / total_checks) * 100) if total_checks > 0 else 0
     
@@ -223,6 +248,9 @@ def evaluate_eligibility(candidate_profile, job):
         "tier": job["tier"],
         "tier_label": job["tier_label"],
         "sector": job["sector"],
+        "state": job_state,
+        "is_home_state": is_home_state,
+        "state_eligibility": state_elig,
         "vacancies": job["vacancies"],
         "status": status,
         "match_score": score,
@@ -270,9 +298,13 @@ def match_all_jobs(candidate_profile):
         if status == "eligible":
             results["total_eligible_vacancies"] += eval_result["vacancies"]
             
-    # Sort eligible by application status (closing_soon first, then open, then upcoming)
+    # Sort eligible: Prioritize Home State jobs first, then closing_soon, then open, then upcoming
     priority_order = {"closing_soon": 0, "open": 1, "upcoming": 2}
-    results["eligible"].sort(key=lambda x: (priority_order.get(x["app_status"], 3), x["app_end_date"]))
+    results["eligible"].sort(key=lambda x: (
+        0 if x.get("is_home_state") else 1,
+        priority_order.get(x["app_status"], 3),
+        x["app_end_date"]
+    ))
     results["near_match"].sort(key=lambda x: -x["match_score"])
     
     return results

@@ -43,6 +43,7 @@ def list_jobs():
     search = request.args.get("search", "").strip().lower()
     tier = request.args.get("tier", "").strip()
     sector = request.args.get("sector", "").strip()
+    state = request.args.get("state", "").strip()
     status = request.args.get("status", "").strip()
     edu = request.args.get("education", "").strip()
     sort_by = request.args.get("sort", "status")  # 'deadline', 'vacancies', 'status', 'tier'
@@ -51,7 +52,7 @@ def list_jobs():
     for j in jobs:
         # Search match
         if search:
-            match_str = f"{j['title']} {j['department']} {j['sector']} {j['description']}".lower()
+            match_str = f"{j['title']} {j['department']} {j['sector']} {j.get('state', '')} {j['description']}".lower()
             if search not in match_str:
                 continue
                 
@@ -61,6 +62,10 @@ def list_jobs():
             
         # Sector filter
         if sector and j.get("sector", "").lower() != sector.lower():
+            continue
+
+        # State filter
+        if state and state.lower() != "all-india" and j.get("state", "").lower() != state.lower():
             continue
             
         # Status filter
@@ -119,6 +124,7 @@ def check_eligibility():
         "gender": data.get("gender", "male").lower(),
         "is_pwd": bool(data.get("is_pwd", False)),
         "is_ex_serviceman": bool(data.get("is_ex_serviceman", False)),
+        "domicile": data.get("domicile", "All-India").strip(),
         "height_cm": float(data.get("height_cm")) if data.get("height_cm") else None,
         "check_physical": bool(data.get("check_physical", False))
     }
